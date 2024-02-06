@@ -10,10 +10,10 @@ class CalendarPageBody extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times:',
+              'To do: write calendar page',
             ),
             Text(
-              '0',
+              'Calendar',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
