@@ -115,7 +115,8 @@ class _HomePageState extends State<HomePageBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
+      child:Padding(
         padding: EdgeInsets.all(32.0),
         child: Center(
           child: Column(
@@ -146,6 +147,7 @@ class _HomePageState extends State<HomePageBody> {
             ],
           ),
         ),
-      );
+      ),
+    );
   }
 }
