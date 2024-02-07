@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'staticpage.dart';
+import 'pages.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -67,11 +67,23 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
   }
+
+  var pageIndex = 0;
   void _onTapBottomNavigationBar(int index){
     setState(() {
-      
+      pageIndex = index; //page遷移, 選択時の色遷移をする。
     });
   }
+
+  void _onTapAppBar(int index){
+    setState(() {
+      pageIndex = index; //page遷移, 選択時の色遷移をする。
+    });
+  }
+
+  final settingsIndex = 2;
+  final homeIndex = 3;
+  
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -80,6 +92,8 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    final _pages = [CalendarPageBody(), MedicinePageBody(title: "Medicine"), SettingsPageBody(title: "Settings"), HomePageBody(title: "Home")];
+    
     return Scaffold(
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
@@ -90,14 +104,20 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: CalendarPageBody(),
+      body: _pages[pageIndex],
+      // To do: floating buttonの追加, medicine pageでは恐らくflutter側からfirebaseを呼び出す処理が挟まれる。
       bottomNavigationBar: BottomNavigationBar(
         items: [
+        BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'Calendar'),
+        BottomNavigationBarItem(icon: Icon(Icons.medical_services), label: 'Medicine'),
+        BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.medical_services), label: 'Album'),
         //BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
         ],
-        onTap: _onTapBottomNavigationBar
+        onTap: _onTapBottomNavigationBar,
+        selectedItemColor: Colors.pink, 
+        currentIndex: pageIndex, //これも設定しないとページ遷移時の色が変化しない。
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }
