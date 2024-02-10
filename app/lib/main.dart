@@ -1,6 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'pages.dart';
+import 'config.dart';
+
+final configrations = Configurations();
+Future<void> init() async {
+  //これ絶対に必要, initもしろ
+  await Firebase.initializeApp(
+      options: FirebaseOptions(
+          apiKey: configrations.apiKey,
+          appId: configrations.appId,
+          messagingSenderId: configrations.messagingSenderId,
+          projectId: configrations.projectId));
+}
+
 void main() {
+  init();
   runApp(const MyApp());
 }
 
@@ -31,7 +48,88 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Care App'),
+      home: LoginPage(),
+    );
+  }
+}
+
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  // メッセージ表示用
+  String infoText = '';
+  // 入力したメールアドレス・パスワード
+  String email = '';
+  String password = '';
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        // TRY THIS: Try changing the color here to a specific color (to
+        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+        // change color while the other colors stay the same.
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text("Log in"),
+      ),
+      body: Center(
+        child: Container(
+          padding: EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextFormField(
+                  decoration: InputDecoration(labelText: "メールアドレス"),
+                  onChanged: (String value) {
+                    setState(() {
+                      email = value;
+                    });
+                  }),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'パスワード'),
+                obscureText: true,
+                onChanged: (String value) {
+                  setState(() {
+                    password = value;
+                  });
+                },
+              ),
+              Container(
+                padding: EdgeInsets.all(8),
+                // メッセージ表示
+                child: Text(infoText),
+              ),
+              SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                child: OutlinedButton(
+                  child: Text("ログイン"),
+                  onPressed: () async {
+                    try {
+                      final FirebaseAuth auth = FirebaseAuth.instance;
+                      final result = await auth.signInWithEmailAndPassword(
+                          email: email, password: password);
+                      await Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) {
+                          return MyHomePage(title: "CareApp");
+                        }),
+                      );
+                    } catch (e) {
+                      setState(() {
+                        infoText = "ログインに失敗しました。${e.toString()}";
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -69,13 +167,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   var pageIndex = 0;
-  void _onTapBottomNavigationBar(int index){
+  void _onTapBottomNavigationBar(int index) {
     setState(() {
       pageIndex = index; //page遷移, 選択時の色遷移をする。
     });
   }
 
-  void _onTapAppBar(int index){
+  void _onTapAppBar(int index) {
     setState(() {
       pageIndex = index; //page遷移, 選択時の色遷移をする。
     });
@@ -83,7 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final settingsIndex = 2;
   final homeIndex = 3;
-  
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -92,8 +190,13 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    final _pages = [CalendarPageBody(), MedicinePageBody(title: "Medicine"), SettingsPageBody(title: "Settings"), HomePageBody(title: "Home")];
-    
+    final _pages = [
+      CalendarPageBody(),
+      MedicinePageBody(title: "Medicine"),
+      SettingsPageBody(title: "Settings"),
+      HomePageBody(title: "Home")
+    ];
+
     return Scaffold(
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
@@ -108,14 +211,17 @@ class _MyHomePageState extends State<MyHomePage> {
       // To do: floating buttonの追加, medicine pageでは恐らくflutter側からfirebaseを呼び出す処理が挟まれる。
       bottomNavigationBar: BottomNavigationBar(
         items: [
-        BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'Calendar'),
-        BottomNavigationBarItem(icon: Icon(Icons.medical_services), label: 'Medicine'),
-        BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        //BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_month), label: 'Calendar'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.medical_services), label: 'Medicine'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings), label: 'Settings'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          //BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
         ],
         onTap: _onTapBottomNavigationBar,
-        selectedItemColor: Colors.pink, 
+        selectedItemColor: Colors.pink,
         currentIndex: pageIndex, //これも設定しないとページ遷移時の色が変化しない。
         type: BottomNavigationBarType.fixed,
       ),

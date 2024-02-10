@@ -2,24 +2,26 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class CalendarPageBody extends StatelessWidget {
-  const CalendarPageBody({super.key,});
+  const CalendarPageBody({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'To do: write calendar page',
-            ),
-            Text(
-              'Calendar',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      );
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const Text(
+            'To do: write calendar page',
+          ),
+          Text(
+            'Calendar',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -39,9 +41,9 @@ class _MedicinePageState extends State<MedicinePageBody> {
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
-    child: ListView.builder(
+        child: ListView.builder(
       itemCount: medicineList.length,
-      itemBuilder: (context, index){
+      itemBuilder: (context, index) {
         return Card(
           child: ListTile(
             leading: Image.asset(imagesList[index]),
@@ -49,8 +51,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
           ),
         );
       },
-    )
-    );
+    ));
   }
 }
 
@@ -97,26 +98,41 @@ class HomePageBody extends StatefulWidget {
 
 class _HomePageState extends State<HomePageBody> {
   final remindDropDownItems = [
-    DropdownMenuItem(child: Text("15 min"), value: 15,),
-    DropdownMenuItem(child: Text("30 min"), value: 30,),
-    DropdownMenuItem(child: Text("45 min"), value: 45,),
-    DropdownMenuItem(child: Text("60 min"), value: 60,),
+    DropdownMenuItem(
+      child: Text("15 min"),
+      value: 15,
+    ),
+    DropdownMenuItem(
+      child: Text("30 min"),
+      value: 30,
+    ),
+    DropdownMenuItem(
+      child: Text("45 min"),
+      value: 45,
+    ),
+    DropdownMenuItem(
+      child: Text("60 min"),
+      value: 60,
+    ),
   ];
 
   var isSelectedValue = 15;
 
-  void remindDropDownChanged(int? value){
+  void remindDropDownChanged(int? value) {
     setState(() {
       isSelectedValue = value!;
     });
   }
 
-  List<String> carers = List.generate(10, (_) => String.fromCharCodes(List.generate(5, (_) => Random().nextInt(26) + 97)));
+  List<String> carers = List.generate(
+      10,
+      (_) => String.fromCharCodes(
+          List.generate(5, (_) => Random().nextInt(26) + 97)));
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child:Padding(
+      child: Padding(
         padding: EdgeInsets.all(32.0),
         child: Center(
           child: Column(
@@ -125,7 +141,11 @@ class _HomePageState extends State<HomePageBody> {
                 '通知の頻度',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
-              DropdownButton(items: remindDropDownItems, onChanged: (value) => remindDropDownChanged(value), value: isSelectedValue,),
+              DropdownButton(
+                items: remindDropDownItems,
+                onChanged: (value) => remindDropDownChanged(value),
+                value: isSelectedValue,
+              ),
               Text(
                 '共同介護者',
                 style: Theme.of(context).textTheme.headlineMedium,
@@ -135,7 +155,7 @@ class _HomePageState extends State<HomePageBody> {
                 child: ListView.builder(
                   scrollDirection: Axis.vertical,
                   itemCount: carers.length,
-                  itemBuilder: (context, index){
+                  itemBuilder: (context, index) {
                     return Card(
                       child: ListTile(
                         title: Text(carers[index]),
