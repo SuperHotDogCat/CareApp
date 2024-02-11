@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'pages.dart';
 import 'config.dart';
+import 'utils.dart';
 
 final configrations = Configurations();
 Future<void> init() async {
@@ -17,6 +18,7 @@ Future<void> init() async {
 }
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   init();
   runApp(const MyApp());
 }
@@ -28,6 +30,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false, // これを追
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -48,17 +51,17 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: LoginPage(),
+      home: LogInPage(),
     );
   }
 }
 
-class LoginPage extends StatefulWidget {
+class LogInPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LogInPageState createState() => _LogInPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LogInPageState extends State<LogInPage> {
   // メッセージ表示用
   String infoText = '';
   // 入力したメールアドレス・パスワード
@@ -115,12 +118,145 @@ class _LoginPageState extends State<LoginPage> {
                           email: email, password: password);
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) {
+                          print(result.user!.uid);
                           return MyHomePage(title: "CareApp");
                         }),
                       );
                     } catch (e) {
                       setState(() {
                         infoText = "ログインに失敗しました。${e.toString()}";
+                      });
+                    }
+                  },
+                ),
+              ),
+              SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                child: ElevatedButton(
+                    child: Text("ユーザー登録"),
+                    onPressed: () async {
+                      await Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) {
+                        return SignUpPage();
+                      }));
+                    }),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SignUpPage extends StatefulWidget {
+  @override
+  _SignUpState createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUpPage> {
+  // メッセージ表示用
+  String infoText = '';
+  // 入力したメールアドレス・パスワード
+  String email = '';
+  String password = '';
+  String passwordConfirmation = '';
+  String userName = '';
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        // TRY THIS: Try changing the color here to a specific color (to
+        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+        // change color while the other colors stay the same.
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text("Sign Up"),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await Navigator.of(context)
+                  .pushReplacement(MaterialPageRoute(builder: (context) {
+                return LogInPage();
+              }));
+            },
+            icon: Icon(Icons.chevron_left),
+            tooltip: "ログイン画面に戻る",
+          ),
+        ],
+      ),
+      body: Center(
+        child: Container(
+          padding: EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextFormField(
+                  decoration: InputDecoration(labelText: "メールアドレス"),
+                  onChanged: (String value) {
+                    setState(() {
+                      email = value;
+                    });
+                  }),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'パスワード'),
+                obscureText: true,
+                onChanged: (String value) {
+                  setState(() {
+                    password = value;
+                  });
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'パスワード確認'),
+                obscureText: true,
+                onChanged: (String value) {
+                  setState(() {
+                    passwordConfirmation = value;
+                  });
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: '名前'),
+                onChanged: (String value) {
+                  setState(() {
+                    userName = value;
+                  });
+                },
+              ),
+              Container(
+                padding: EdgeInsets.all(8),
+                // メッセージ表示
+                child: Text(infoText),
+              ),
+              SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                child: OutlinedButton(
+                  child: Text("ユーザー登録"),
+                  onPressed: () async {
+                    try {
+                      if (password == passwordConfirmation) {
+                        final FirebaseAuth auth = FirebaseAuth.instance;
+                        final result =
+                            await auth.createUserWithEmailAndPassword(
+                                email: email, password: password);
+                        var userBasicProfile = {"name": userName};
+                        //createUserBasicData
+                        createUserBasicData(result.user!, userBasicProfile);
+                        await Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) {
+                            return MyHomePage(title: "CareApp");
+                          }),
+                        );
+                      } else {
+                        infoText = "パスワードの確認をしてください。";
+                      }
+                    } catch (e) {
+                      setState(() {
+                        infoText = "ユーザー登録に失敗しました。${e.toString()}";
                       });
                     }
                   },
@@ -191,7 +327,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     final _pages = [
-      CalendarPageBody(),
+      CalendarPageBody(title: "Calender"),
       MedicinePageBody(title: "Medicine"),
       SettingsPageBody(title: "Settings"),
       HomePageBody(title: "Home")
@@ -206,6 +342,18 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await Navigator.of(context)
+                  .pushReplacement(MaterialPageRoute(builder: (context) {
+                return LogInPage();
+              }));
+            },
+            icon: Icon(Icons.chevron_left),
+            tooltip: "ログイン画面に戻る",
+          ),
+        ],
       ),
       body: _pages[pageIndex],
       // To do: floating buttonの追加, medicine pageでは恐らくflutter側からfirebaseを呼び出す処理が挟まれる。

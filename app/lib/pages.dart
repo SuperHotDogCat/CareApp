@@ -1,23 +1,40 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-class CalendarPageBody extends StatelessWidget {
-  const CalendarPageBody({
-    super.key,
-  });
+import 'package:table_calendar/table_calendar.dart';
+
+class CalendarPageBody extends StatefulWidget {
+  const CalendarPageBody({super.key, required this.title});
+  final title;
+  @override
+  State<CalendarPageBody> createState() => _CalendarPageState();
+}
+
+class _CalendarPageState extends State<CalendarPageBody> {
+  DateTime _focused = DateTime.now();
+  DateTime? _selected;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        //mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const Text(
-            'To do: write calendar page',
-          ),
-          Text(
-            'Calendar',
-            style: Theme.of(context).textTheme.headlineMedium,
+          TableCalendar(
+            focusedDay: _focused,
+            firstDay: DateTime.utc(2024, 1, 1),
+            lastDay: DateTime.utc(2024, 12, 31),
+            onDaySelected: (selected, focused) {
+              if (!isSameDay(_selected, selected)) {
+                setState(() {
+                  _selected = selected;
+                  _focused = focused;
+                });
+              }
+            },
+            selectedDayPredicate: (day) {
+              return isSameDay(_selected, day);
+            },
           ),
         ],
       ),
