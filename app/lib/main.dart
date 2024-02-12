@@ -75,7 +75,8 @@ class _LogInPageState extends State<LogInPage> {
       body: Center(
         child: Container(
           padding: EdgeInsets.all(24),
-          child: Column(
+          child: AutofillGroup(child: 
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextFormField(
@@ -84,7 +85,10 @@ class _LogInPageState extends State<LogInPage> {
                     setState(() {
                       email = value;
                     });
-                  }),
+                  },
+                  keyboardType: TextInputType.emailAddress,
+                  autofillHints: [AutofillHints.email],
+              ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'パスワード'),
                 obscureText: true,
@@ -93,6 +97,7 @@ class _LogInPageState extends State<LogInPage> {
                     password = value;
                   });
                 },
+                autofillHints: [AutofillHints.password],
               ),
               Container(
                 padding: EdgeInsets.all(8),
@@ -136,6 +141,7 @@ class _LogInPageState extends State<LogInPage> {
                     }),
               ),
             ],
+          ),
           ),
         ),
       ),
