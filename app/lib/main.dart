@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'pages.dart';
 import 'config.dart';
 import 'utils.dart';
+//ios build, firebase iosを追加して手順に従う->https://qiita.com/kasa_le/items/fed9f25b92091bd162ce & https://zenn.dev/popy1017/articles/b9f3e46b5efeb79af1f7
 
 final configrations = Configurations();
 Future<void> init() async {
@@ -19,7 +20,7 @@ Future<void> init() async {
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  init();
+  init(); //Firebase Initialization
   runApp(const MyApp());
 }
 
@@ -69,6 +70,16 @@ class _LogInPageState extends State<LogInPage> {
   String password = '';
   @override
   Widget build(BuildContext context) {
+    // firebaseのテスト中なのでいつか消す
+    /*
+    var userStream = fetchUserDataTest();
+    var userData;
+    print(userStream.toList());
+    userStream.listen((DocumentSnapshot snapshot){
+      if (snapshot.exists){
+      print(snapshot.data());
+      }
+    });*/
     return Scaffold(
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
@@ -118,8 +129,8 @@ class _LogInPageState extends State<LogInPage> {
                           email: email, password: password);
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) {
-                          print(result.user!.uid);
-                          return MyHomePage(title: "CareApp");
+                          return MyHomePage(
+                              title: "CareApp", user: result.user!);
                         }),
                       );
                     } catch (e) {
@@ -248,7 +259,8 @@ class _SignUpState extends State<SignUpPage> {
                         createUserBasicData(result.user!, userBasicProfile);
                         await Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (context) {
-                            return MyHomePage(title: "CareApp");
+                            return MyHomePage(
+                                title: "CareApp", user: result.user!);
                           }),
                         );
                       } else {
@@ -271,7 +283,7 @@ class _SignUpState extends State<SignUpPage> {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, required this.user});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -283,24 +295,15 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String title;
+  final User user;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState(user: user);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  _MyHomePageState({required this.user});
+  User user;
 
   var pageIndex = 0;
   void _onTapBottomNavigationBar(int index) {
@@ -326,11 +329,21 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+
     final _pages = [
-      CalendarPageBody(title: "Calender"),
-      MedicinePageBody(title: "Medicine"),
-      SettingsPageBody(title: "Settings"),
-      HomePageBody(title: "Home")
+      CalendarPageBody(
+        title: "Calender",
+        user: user,
+      ),
+      MedicinePageBody(
+        title: "Medicine",
+        user: user,
+      ),
+      SettingsPageBody(
+        title: "Settings",
+        user: user,
+      ),
+      HomePageBody(title: "Home", user: user)
     ];
 
     return Scaffold(

@@ -1,18 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
-
 import 'package:table_calendar/table_calendar.dart';
+import 'dart:math';
+import 'utils.dart';
 
 class CalendarPageBody extends StatefulWidget {
-  const CalendarPageBody({super.key, required this.title});
+  const CalendarPageBody({super.key, required this.title, required this.user});
   final title;
+  final User user;
   @override
-  State<CalendarPageBody> createState() => _CalendarPageState();
+  State<CalendarPageBody> createState() => _CalendarPageState(user: user);
 }
 
 class _CalendarPageState extends State<CalendarPageBody> {
+  _CalendarPageState({required this.user});
   DateTime _focused = DateTime.now();
   DateTime? _selected;
+  User user;
 
   @override
   Widget build(BuildContext context) {
@@ -43,17 +48,20 @@ class _CalendarPageState extends State<CalendarPageBody> {
 }
 
 class MedicinePageBody extends StatefulWidget {
-  const MedicinePageBody({super.key, required this.title});
+  const MedicinePageBody({super.key, required this.title, required this.user});
   final String title;
+  final User user;
 
   @override
-  State<MedicinePageBody> createState() => _MedicinePageState();
+  State<MedicinePageBody> createState() => _MedicinePageState(user: user);
 }
 
 class _MedicinePageState extends State<MedicinePageBody> {
+  _MedicinePageState({required this.user});
   // 薬リストのデータ
   List<String> medicineList = ["コンサータ"];
   List<String> imagesList = ["assets/1179009G1022_000.jpg"];
+  User user;
 
   @override
   Widget build(BuildContext context) {
@@ -73,17 +81,21 @@ class _MedicinePageState extends State<MedicinePageBody> {
 }
 
 class SettingsPageBody extends StatefulWidget {
-  const SettingsPageBody({super.key, required this.title});
+  const SettingsPageBody({super.key, required this.title, required this.user});
   final String title;
+  final User user;
 
   @override
-  State<SettingsPageBody> createState() => _SettingsPageState();
+  State<SettingsPageBody> createState() => _SettingsPageState(user: user);
 }
 
 class _SettingsPageState extends State<SettingsPageBody> {
+  _SettingsPageState({required this.user});
   // 薬リストのデータ
   List<String> medicineList = ["hogehoge"];
   List<String> imagesList = ["assets/1179009G1022_000.jpg"];
+  User user;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -106,14 +118,17 @@ class _SettingsPageState extends State<SettingsPageBody> {
 }
 
 class HomePageBody extends StatefulWidget {
-  const HomePageBody({super.key, required this.title});
+  const HomePageBody({super.key, required this.title, required this.user});
   final String title;
+  final User user;
 
   @override
-  State<HomePageBody> createState() => _HomePageState();
+  State<HomePageBody> createState() => _HomePageState(user: user);
 }
 
 class _HomePageState extends State<HomePageBody> {
+  _HomePageState({required this.user});
+  User user;
   final remindDropDownItems = [
     DropdownMenuItem(
       child: Text("15 min"),

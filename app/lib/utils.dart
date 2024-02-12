@@ -25,4 +25,32 @@ void createUserBasicData(User user, Map userBasicProfile) {
   schedule.doc('schedule').set({
     'schedule': <Map<DateTime, String>>[] // key: DateTime, value: Content
   });
+  CollectionReference caregivers = FirebaseFirestore.instance
+      .collection('users')
+      .doc(user.uid)
+      .collection('caregivers');
+  caregivers.doc('caregivers').set({
+    'caregivers': <Map<String, String>>[] // key: uid, value: name
+  });
+}
+
+Widget RealTimeStreamDataWidget(stream, builder) {
+  return StreamBuilder<QuerySnapshot>(stream: stream, builder: builder);
+}
+
+Widget RealTimeDataWidget(stream, builder) {
+  return StreamBuilder(stream: stream, builder: builder);
+}
+
+Stream<DocumentSnapshot> fetchUserData(User user) {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  return firestore.collection('users').doc(user.uid).snapshots();
+}
+
+Stream<DocumentSnapshot> fetchUserDataTest() {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  return firestore
+      .collection('users')
+      .doc("azuxHrjNPFhkGkInWA0tQJXgpWG3")
+      .snapshots();
 }
