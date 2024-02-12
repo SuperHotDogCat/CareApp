@@ -104,11 +104,23 @@ class _SettingsPageState extends State<SettingsPageBody> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
-              children: [Text("Name: "), Text("Hoge Tarou")],
-            ),
-            Row(
-              children: [Text("ID: "), Text("Yaa")],
+            StreamBuilder<DocumentSnapshot>(
+              stream: fetchUserDataSnapShots(user),
+              builder: (context, snapshot){
+                if (snapshot.connectionState == ConnectionState.waiting){
+                  return CircularProgressIndicator();
+                }
+                // ドキュメントからデータを取得
+                Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
+                String name = userData['name'] ?? ''; // nameがnullの場合は空文字を表示
+                String id = userData['id'] ?? ''; // idがnullの場合は空文字を表示
+                return Column(
+                  children: [
+                    Row(children: [Text("Name: "), Text(name)]),
+                    Row(children: [Text("Id: "), Text(id)]),
+                  ],
+                );
+              },
             ),
           ],
         ),

@@ -42,7 +42,7 @@ Widget RealTimeDataWidget(stream, builder) {
   return StreamBuilder(stream: stream, builder: builder);
 }
 
-Stream<DocumentSnapshot> fetchUserData(User user) {
+Stream<DocumentSnapshot> fetchUserDataSnapShots(User user) {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   return firestore.collection('users').doc(user.uid).snapshots();
 }
@@ -53,4 +53,15 @@ Stream<DocumentSnapshot> fetchUserDataTest() {
       .collection('users')
       .doc("azuxHrjNPFhkGkInWA0tQJXgpWG3")
       .snapshots();
+}
+
+Map<String, dynamic> fetchUserDataWithNameAndId(User user){
+  var userStream = fetchUserDataSnapShots(user);
+  Map<String, dynamic> userData = {};
+  userStream.listen((DocumentSnapshot snapshot){
+      if (snapshot.exists){
+        userData = snapshot.data() as Map<String, dynamic>;
+      }
+  });
+  return userData;
 }
