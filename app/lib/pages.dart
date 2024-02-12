@@ -41,6 +41,8 @@ class _CalendarPageState extends State<CalendarPageBody> {
               return isSameDay(_selected, day);
             },
           ),
+          SizedBox(height: 20),
+          //To Do: ここにカレンダーをタップした時の予定を書く
         ],
       ),
     );
@@ -106,12 +108,13 @@ class _SettingsPageState extends State<SettingsPageBody> {
           children: [
             StreamBuilder<DocumentSnapshot>(
               stream: fetchUserDataSnapShots(user),
-              builder: (context, snapshot){
-                if (snapshot.connectionState == ConnectionState.waiting){
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator();
                 }
                 // ドキュメントからデータを取得
-                Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
+                Map<String, dynamic> userData =
+                    snapshot.data!.data() as Map<String, dynamic>;
                 String name = userData['name'] ?? ''; // nameがnullの場合は空文字を表示
                 String id = userData['id'] ?? ''; // idがnullの場合は空文字を表示
                 return Column(
@@ -168,7 +171,7 @@ class _HomePageState extends State<HomePageBody> {
     });
   }
 
-  List<String> carers = List.generate(
+  List<String> caregivers = List.generate(
       10,
       (_) => String.fromCharCodes(
           List.generate(5, (_) => Random().nextInt(26) + 97)));
@@ -198,11 +201,11 @@ class _HomePageState extends State<HomePageBody> {
                 height: 200,
                 child: ListView.builder(
                   scrollDirection: Axis.vertical,
-                  itemCount: carers.length,
+                  itemCount: caregivers.length,
                   itemBuilder: (context, index) {
                     return Card(
                       child: ListTile(
-                        title: Text(carers[index]),
+                        title: Text(caregivers[index]),
                       ),
                     );
                   },
@@ -213,5 +216,161 @@ class _HomePageState extends State<HomePageBody> {
         ),
       ),
     );
+  }
+}
+
+class CalendarPageDrawer extends StatefulWidget {
+  CalendarPageDrawer({super.key});
+  @override
+  _CalendarPageDrawerState createState() => _CalendarPageDrawerState();
+}
+
+class _CalendarPageDrawerState extends State<CalendarPageDrawer> {
+  @override
+  Widget build(context) {
+    return Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Calendar Drawer Header'),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.inversePrimary,
+              ),
+            ),
+            ListTile(
+              title: Text('項目 1'),
+              onTap: () {
+                // Drawer内の項目がタップされたときの動作
+                Navigator.pop(context); // Drawerを閉じる
+              },
+            ),
+            ListTile(
+              title: Text('項目 2'),
+              onTap: () {
+                // Drawer内の項目がタップされたときの動作
+                Navigator.pop(context); // Drawerを閉じる
+              },
+            ),
+          ],
+        ),
+      );
+  }
+}
+
+class MedicinePageDrawer extends StatefulWidget {
+  MedicinePageDrawer({super.key});
+  @override
+  _MedicinePageDrawerState createState() => _MedicinePageDrawerState();
+}
+
+class _MedicinePageDrawerState extends State<MedicinePageDrawer> {
+  @override
+  Widget build(context) {
+    return Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Medicine Drawer Header'),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.inversePrimary,
+              ),
+            ),
+            ListTile(
+              title: Text('項目 1'),
+              onTap: () {
+                // Drawer内の項目がタップされたときの動作
+                Navigator.pop(context); // Drawerを閉じる
+              },
+            ),
+            ListTile(
+              title: Text('項目 2'),
+              onTap: () {
+                // Drawer内の項目がタップされたときの動作
+                Navigator.pop(context); // Drawerを閉じる
+              },
+            ),
+          ],
+        ),
+      );
+  }
+}
+
+class SettingsPageDrawer extends StatefulWidget {
+  SettingsPageDrawer({super.key});
+  @override
+  _SettingsPageDrawerState createState() => _SettingsPageDrawerState();
+}
+
+class _SettingsPageDrawerState extends State<SettingsPageDrawer> {
+  @override
+  Widget build(context) {
+    return Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Settings Drawer Header'),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.inversePrimary,
+              ),
+            ),
+            ListTile(
+              title: Text('項目 1'),
+              onTap: () {
+                // Drawer内の項目がタップされたときの動作
+                Navigator.pop(context); // Drawerを閉じる
+              },
+            ),
+            ListTile(
+              title: Text('項目 2'),
+              onTap: () {
+                // Drawer内の項目がタップされたときの動作
+                Navigator.pop(context); // Drawerを閉じる
+              },
+            ),
+          ],
+        ),
+      );
+  }
+}
+
+class HomePageDrawer extends StatefulWidget {
+  HomePageDrawer({super.key});
+  @override
+  _HomePageDrawerState createState() => _HomePageDrawerState();
+}
+
+class _HomePageDrawerState extends State<HomePageDrawer> {
+  @override
+  Widget build(context) {
+    return Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Home Drawer Header'),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.inversePrimary,
+              ),
+            ),
+            ListTile(
+              title: Text('項目 1'),
+              onTap: () {
+                // Drawer内の項目がタップされたときの動作
+                Navigator.pop(context); // Drawerを閉じる
+              },
+            ),
+            ListTile(
+              title: Text('項目 2'),
+              onTap: () {
+                // Drawer内の項目がタップされたときの動作
+                Navigator.pop(context); // Drawerを閉じる
+              },
+            ),
+          ],
+        ),
+      );
   }
 }

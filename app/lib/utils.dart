@@ -55,13 +55,13 @@ Stream<DocumentSnapshot> fetchUserDataTest() {
       .snapshots();
 }
 
-Map<String, dynamic> fetchUserDataWithNameAndId(User user){
+Map<String, dynamic> fetchUserDataWithNameAndId(User user) {
   var userStream = fetchUserDataSnapShots(user);
   Map<String, dynamic> userData = {};
-  userStream.listen((DocumentSnapshot snapshot){
-      if (snapshot.exists){
-        userData = snapshot.data() as Map<String, dynamic>;
-      }
+  userStream.listen((DocumentSnapshot snapshot) {
+    if (snapshot.exists) {
+      userData = snapshot.data() as Map<String, dynamic>;
+    }
   });
   return userData;
 }

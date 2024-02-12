@@ -55,18 +55,6 @@ class _LogInPageState extends State<LogInPage> {
   String password = '';
   @override
   Widget build(BuildContext context) {
-    // firebaseのテスト中なのでいつか消す
-    /*
-    var userStream = fetchUserDataTest();
-    Map<String, dynamic> userData = {};
-    userStream.listen((DocumentSnapshot snapshot){
-      if (snapshot.exists){
-      setState(() {
-        userData = snapshot.data() as Map<String, dynamic>;
-      });
-      }
-    });*/
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -75,11 +63,11 @@ class _LogInPageState extends State<LogInPage> {
       body: Center(
         child: Container(
           padding: EdgeInsets.all(24),
-          child: AutofillGroup(child: 
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextFormField(
+          child: AutofillGroup(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextFormField(
                   decoration: InputDecoration(labelText: "メールアドレス"),
                   onChanged: (String value) {
                     setState(() {
@@ -88,60 +76,60 @@ class _LogInPageState extends State<LogInPage> {
                   },
                   keyboardType: TextInputType.emailAddress,
                   autofillHints: [AutofillHints.email],
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'パスワード'),
-                obscureText: true,
-                onChanged: (String value) {
-                  setState(() {
-                    password = value;
-                  });
-                },
-                autofillHints: [AutofillHints.password],
-              ),
-              Container(
-                padding: EdgeInsets.all(8),
-                // メッセージ表示
-                child: Text(infoText),
-              ),
-              SizedBox(height: 8),
-              Container(
-                width: double.infinity,
-                child: OutlinedButton(
-                  child: Text("ログイン"),
-                  onPressed: () async {
-                    try {
-                      final FirebaseAuth auth = FirebaseAuth.instance;
-                      final result = await auth.signInWithEmailAndPassword(
-                          email: email, password: password);
-                      await Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) {
-                          return MyHomePage(
-                              title: "CareApp", user: result.user!);
-                        }),
-                      );
-                    } catch (e) {
-                      setState(() {
-                        infoText = "ログインに失敗しました。${e.toString()}";
-                      });
-                    }
-                  },
                 ),
-              ),
-              SizedBox(height: 8),
-              Container(
-                width: double.infinity,
-                child: ElevatedButton(
-                    child: Text("ユーザー登録"),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'パスワード'),
+                  obscureText: true,
+                  onChanged: (String value) {
+                    setState(() {
+                      password = value;
+                    });
+                  },
+                  autofillHints: [AutofillHints.password],
+                ),
+                Container(
+                  padding: EdgeInsets.all(8),
+                  // メッセージ表示
+                  child: Text(infoText),
+                ),
+                SizedBox(height: 8),
+                Container(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    child: Text("ログイン"),
                     onPressed: () async {
-                      await Navigator.of(context).pushReplacement(
+                      try {
+                        final FirebaseAuth auth = FirebaseAuth.instance;
+                        final result = await auth.signInWithEmailAndPassword(
+                            email: email, password: password);
+                        await Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (context) {
-                        return SignUpPage();
-                      }));
-                    }),
-              ),
-            ],
-          ),
+                            return MyHomePage(
+                                title: "CareApp", user: result.user!);
+                          }),
+                        );
+                      } catch (e) {
+                        setState(() {
+                          infoText = "ログインに失敗しました。${e.toString()}";
+                        });
+                      }
+                    },
+                  ),
+                ),
+                SizedBox(height: 8),
+                Container(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                      child: Text("ユーザー登録"),
+                      onPressed: () async {
+                        await Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) {
+                          return SignUpPage();
+                        }));
+                      }),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -166,12 +154,7 @@ class _SignUpState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text("Sign Up"),
         actions: [
           IconButton(
@@ -301,16 +284,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final settingsIndex = 2;
   final homeIndex = 3;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-
     final _pages = [
       CalendarPageBody(
         title: "Calender",
@@ -327,14 +304,24 @@ class _MyHomePageState extends State<MyHomePage> {
       HomePageBody(title: "Home", user: user)
     ];
 
+    final _drawers = [
+      CalendarPageDrawer(),
+      MedicinePageDrawer(),
+      SettingsPageDrawer(),
+      HomePageDrawer(),
+    ];
+
     return Scaffold(
+      key: _scaffoldKey, 
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
+        leading: IconButton(icon: Icon(Icons.add), onPressed: () {
+          // Drawerを開く
+          _scaffoldKey.currentState?.openDrawer();
+        },), // plusアイコンを使用
         title: Text(widget.title),
         actions: [
           IconButton(
@@ -367,6 +354,7 @@ class _MyHomePageState extends State<MyHomePage> {
         currentIndex: pageIndex, //これも設定しないとページ遷移時の色が変化しない。
         type: BottomNavigationBarType.fixed,
       ),
+      drawer: _drawers[pageIndex]
     );
   }
 }
