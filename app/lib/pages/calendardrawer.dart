@@ -72,7 +72,9 @@ class _CalendarPageDrawerState extends State<CalendarPageDrawer> {
     //pop
     Navigator.pop(context);
     } catch(e) {
-      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('予定の追加に失敗しました')),
+      );
     }
   }
 

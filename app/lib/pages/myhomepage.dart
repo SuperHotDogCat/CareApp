@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
       CalendarPageDrawer(user: user,),
       MedicinePageDrawer(),
       SettingsPageDrawer(),
-      HomePageDrawer(),
+      HomePageDrawer(user: user,),
     ];
 
     return Scaffold(
