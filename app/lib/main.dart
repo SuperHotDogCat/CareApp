@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'pages.dart';
 import 'config.dart';
-import 'utils.dart';
 //ios build, firebase iosを追加して手順に従う->https://qiita.com/kasa_le/items/fed9f25b92091bd162ce & https://zenn.dev/popy1017/articles/b9f3e46b5efeb79af1f7
 
 final configrations = Configurations();
@@ -42,6 +39,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/*
 class LogInPage extends StatefulWidget {
   @override
   _LogInPageState createState() => _LogInPageState();
@@ -135,8 +133,8 @@ class _LogInPageState extends State<LogInPage> {
       ),
     );
   }
-}
-
+}*/
+/*
 class SignUpPage extends StatefulWidget {
   @override
   _SignUpState createState() => _SignUpState();
@@ -253,8 +251,8 @@ class _SignUpState extends State<SignUpPage> {
       ),
     );
   }
-}
-
+}*/
+/*
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title, required this.user});
 
@@ -357,4 +355,4 @@ class _MyHomePageState extends State<MyHomePage> {
       drawer: _drawers[pageIndex]
     );
   }
-}
+}*/
