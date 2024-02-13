@@ -17,19 +17,25 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
   void _addCareGiver() async {
     String addCareGiverId = _caregiverController.text;
     final collection = FirebaseFirestore.instance.collection('users');
-    final querySnapshot = await collection.where('id', isEqualTo: addCareGiverId).get();
-    CollectionReference caregivers = await FirebaseFirestore.instance.collection('users').doc(user.uid).collection('caregivers');
+    final querySnapshot =
+        await collection.where('id', isEqualTo: addCareGiverId).get();
+    CollectionReference caregivers = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('caregivers');
 
     for (var doc in querySnapshot.docs) {
       var data = doc.data();
-      if (user.uid != data["id"]){
-        caregivers.doc(addCareGiverId).set({"id": data["id"], "name": data["name"]});
+      if (user.uid != data["id"]) {
+        caregivers
+            .doc(addCareGiverId)
+            .set({"id": data["id"], "name": data["name"]});
         ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('介護者を登録しました')),
+          SnackBar(content: Text('介護者を登録しました')),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('介護者のIDは自分のIDと同じでないことを確認してください')),
+          SnackBar(content: Text('介護者のIDは自分のIDと同じでないことを確認してください')),
         );
       }
     }
@@ -39,37 +45,37 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
   @override
   Widget build(context) {
     return Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Text(
-                '共同介護者の追加',
-                style: TextStyle(
-                  fontSize: 24,
-                ),
-              ),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.inversePrimary,
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            child: Text(
+              '共同介護者の追加',
+              style: TextStyle(
+                fontSize: 24,
               ),
             ),
-            ListTile(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.inversePrimary,
+            ),
+          ),
+          ListTile(
             title: TextField(
               controller: _caregiverController,
               decoration: InputDecoration(
                 labelText: '介護者のID',
               ),
-              ),
             ),
-            Padding(
+          ),
+          Padding(
             padding: EdgeInsets.all(16.0),
             child: ElevatedButton(
               onPressed: _addCareGiver,
               child: Text('追加'),
             ),
-            ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
   }
 }

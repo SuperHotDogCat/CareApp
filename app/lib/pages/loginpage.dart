@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'myhomepage.dart';
 import 'signuppage.dart';
 
-
 class LogInPage extends StatefulWidget {
   @override
   _LogInPageState createState() => _LogInPageState();
