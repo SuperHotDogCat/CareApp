@@ -305,7 +305,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
 
     final _drawers = [
-      CalendarPageDrawer(),
+      CalendarPageDrawer(user: user,),
       MedicinePageDrawer(),
       SettingsPageDrawer(),
       HomePageDrawer(),

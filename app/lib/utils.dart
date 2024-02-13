@@ -17,21 +17,21 @@ void createUserBasicData(User user, Map userBasicProfile) {
       .collection('users')
       .doc(user.uid)
       .collection('medicine');
-  medicine.doc('medicine').set({"medicine": <String>[]});
+  /*medicine.doc('medicine').set({"medicine": <String>[]});*/
   CollectionReference schedule = FirebaseFirestore.instance
       .collection('users')
       .doc(user.uid)
       .collection('schedule');
-  schedule.doc('schedule').set({
+  /*schedule.doc('schedule').set({
     'schedule': <Map<DateTime, String>>[] // key: DateTime, value: Content
-  });
+  });*/
   CollectionReference caregivers = FirebaseFirestore.instance
       .collection('users')
       .doc(user.uid)
       .collection('caregivers');
-  caregivers.doc('caregivers').set({
+  /*caregivers.doc('caregivers').set({
     'caregivers': <Map<String, String>>[] // key: uid, value: name
-  });
+  });*/
 }
 
 Widget RealTimeStreamDataWidget(stream, builder) {
