@@ -24,13 +24,15 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
       var data = doc.data();
       if (user.uid != data["id"]){
         caregivers.doc(addCareGiverId).set({"id": data["id"], "name": data["name"]});
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('介護者を登録しました')),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('介護者のIDは自分のIDと同じでないことを確認してください')),
         );
       }
     }
-
     Navigator.pop(context);
   }
 

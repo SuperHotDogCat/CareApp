@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math';
@@ -59,26 +60,43 @@ class _HomePageState extends State<HomePageBody> {
                 '通知の頻度',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
+              SizedBox(height: 16,),
               DropdownButton(
                 items: remindDropDownItems,
                 onChanged: (value) => remindDropDownChanged(value),
                 value: isSelectedValue,
               ),
+              SizedBox(height: 16,),
               Text(
                 '共同介護者',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
+              SizedBox(height: 16,),
               SizedBox(
                 height: 200,
-                child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: caregivers.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      child: ListTile(
-                        title: Text(caregivers[index]),
-                      ),
-                    );
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection("users").doc(user.uid).collection("caregivers").snapshots(),
+                  builder: (context, snapshot){
+                    if (snapshot.hasError){
+                      return Text("Error");
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting){
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasData){
+                      var careGiverData = snapshot.data?.docs;
+                      return ListView.builder(
+                        itemCount: careGiverData?.length,
+                        itemBuilder: (context, index){
+                          return Card(
+                            child: ListTile(
+                              title: Text(careGiverData?[index]["name"]),
+                            ),
+                          );
+                        }
+                      );
+                    }
+                    return Container();
                   },
                 ),
               ),

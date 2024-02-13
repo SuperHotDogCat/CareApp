@@ -69,12 +69,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       key: _scaffoldKey, 
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         leading: IconButton(icon: Icon(Icons.add), onPressed: () {
-          // Drawerを開く
           _scaffoldKey.currentState?.openDrawer();
         },), // plusアイコンを使用
         title: Text(widget.title),
