@@ -6,7 +6,8 @@ class SettingsPageDrawer extends StatefulWidget {
   SettingsPageDrawer({super.key, required this.user});
   final User user;
   @override
-  _SettingsPageDrawerState createState() => _SettingsPageDrawerState(user: user);
+  _SettingsPageDrawerState createState() =>
+      _SettingsPageDrawerState(user: user);
 }
 
 class _SettingsPageDrawerState extends State<SettingsPageDrawer> {
@@ -28,21 +29,21 @@ class _SettingsPageDrawerState extends State<SettingsPageDrawer> {
     final querySnapshot =
         await collection.where('id', isEqualTo: addCareGiverId).get();
     //add caregivers
-    DocumentReference caregivers = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid);
-    
+    DocumentReference caregivers =
+        await FirebaseFirestore.instance.collection('users').doc(user.uid);
+
     DocumentSnapshot selfSnapShot = await FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
         .get();
     String? selfName;
-    if (selfSnapShot.exists){
-      Map<String, dynamic> userSelfData = selfSnapShot.data() as Map<String, dynamic>;
+    if (selfSnapShot.exists) {
+      Map<String, dynamic> userSelfData =
+          selfSnapShot.data() as Map<String, dynamic>;
       selfName = userSelfData["name"];
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('データが存在しません')),
+        SnackBar(content: Text('データが存在しません')),
       );
     }
 

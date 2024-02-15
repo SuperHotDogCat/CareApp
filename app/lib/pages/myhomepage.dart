@@ -36,6 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
       pageIndex = index; //page遷移, 選択時の色遷移をする。
     });
   }
+
   final homeIndex = 2;
   final settingsIndex = 3;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -106,9 +107,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 icon: Icon(Icons.calendar_month), label: 'Calendar'),
             BottomNavigationBarItem(
                 icon: Icon(Icons.medical_services), label: 'Medicine'),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+                icon: Icon(Icons.settings), label: 'Settings'),
             //BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
           ],
           onTap: _onTapBottomNavigationBar,

@@ -113,8 +113,8 @@ class _SignUpState extends State<SignUpPage> {
               ]),
               Column(children: [
                 ListTile(
-                  onTap: () => _mealTimePicker("lunchTime", _lunchTime,
-                      (newTime) {
+                  onTap: () =>
+                      _mealTimePicker("lunchTime", _lunchTime, (newTime) {
                     _lunchTime = newTime;
                   }),
                   title: Text('昼食の時間を設定'),
@@ -124,8 +124,8 @@ class _SignUpState extends State<SignUpPage> {
               ]),
               Column(children: [
                 ListTile(
-                  onTap: () => _mealTimePicker("dinnerTime", _dinnerTime,
-                      (newTime) {
+                  onTap: () =>
+                      _mealTimePicker("dinnerTime", _dinnerTime, (newTime) {
                     _dinnerTime = newTime;
                   }),
                   title: Text('夜食の時間を設定'),
@@ -150,7 +150,12 @@ class _SignUpState extends State<SignUpPage> {
                         final result =
                             await auth.createUserWithEmailAndPassword(
                                 email: email, password: password);
-                        var userBasicProfile = {"name": userName, "breakfastTime": _breakfastTime, "lunchTime": _lunchTime, "dinnerTime": _dinnerTime};
+                        var userBasicProfile = {
+                          "name": userName,
+                          "breakfastTime": _breakfastTime,
+                          "lunchTime": _lunchTime,
+                          "dinnerTime": _dinnerTime
+                        };
                         //createUserBasicData
                         createUserBasicData(result.user!, userBasicProfile);
                         await Navigator.of(context).pushReplacement(

@@ -10,7 +10,6 @@ void createUserBasicData(User user, Map userBasicProfile) {
   };
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   users.doc(user.uid).set(initialUserData);
-  
 }
 
 Widget RealTimeStreamDataWidget(stream, builder) {
