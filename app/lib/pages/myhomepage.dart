@@ -56,9 +56,14 @@ class _MyHomePageState extends State<MyHomePage> {
         title: "Settings",
         user: user,
       ),
-      HomePageBody(title: "Home", user: user)
+      HomePageBody(
+        title: "Home",
+        user: user,
+        scaffoldState: _scaffoldKey,
+      )
     ];
 
+    //To do: If our app has a page that does not need a drawer, please remove it.
     final _drawers = [
       CalendarPageDrawer(
         user: user,

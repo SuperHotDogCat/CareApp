@@ -17,6 +17,30 @@ class _SignUpState extends State<SignUpPage> {
   String password = '';
   String passwordConfirmation = '';
   String userName = '';
+
+  // DateTime型で変数を初期化、ローカルタイムで朝8時に設定
+  DateTime _breakfastTime = DateTime(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day, 8, 0);
+  DateTime _lunchTime = DateTime(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day, 12, 0);
+  DateTime _dinnerTime = DateTime(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day, 19, 0);
+
+  void _mealTimePicker(String mealType, DateTime mealTime,
+      Function(DateTime) updateFunction) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(mealTime),
+    );
+    if (pickedTime != null) {
+      final newTime = DateTime(mealTime.year, mealTime.month, mealTime.day,
+          pickedTime.hour, pickedTime.minute);
+      setState(() {
+        updateFunction(newTime);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,6 +99,40 @@ class _SignUpState extends State<SignUpPage> {
                   });
                 },
               ),
+              SizedBox(height: 8),
+              Column(children: [
+                ListTile(
+                  onTap: () => _mealTimePicker("breakfastTime", _breakfastTime,
+                      (newTime) {
+                    _breakfastTime = newTime;
+                  }),
+                  title: Text('朝食の時間を設定'),
+                  leading: Icon(Icons.watch),
+                ),
+                Divider()
+              ]),
+              Column(children: [
+                ListTile(
+                  onTap: () => _mealTimePicker("lunchTime", _lunchTime,
+                      (newTime) {
+                    _lunchTime = newTime;
+                  }),
+                  title: Text('昼食の時間を設定'),
+                  leading: Icon(Icons.watch),
+                ),
+                Divider()
+              ]),
+              Column(children: [
+                ListTile(
+                  onTap: () => _mealTimePicker("dinnerTime", _dinnerTime,
+                      (newTime) {
+                    _dinnerTime = newTime;
+                  }),
+                  title: Text('夜食の時間を設定'),
+                  leading: Icon(Icons.watch),
+                ),
+                Divider()
+              ]),
               Container(
                 padding: EdgeInsets.all(8),
                 // メッセージ表示
@@ -92,7 +150,7 @@ class _SignUpState extends State<SignUpPage> {
                         final result =
                             await auth.createUserWithEmailAndPassword(
                                 email: email, password: password);
-                        var userBasicProfile = {"name": userName};
+                        var userBasicProfile = {"name": userName, "breakfastTime": _breakfastTime, "lunchTime": _lunchTime, "dinnerTime": _dinnerTime};
                         //createUserBasicData
                         createUserBasicData(result.user!, userBasicProfile);
                         await Navigator.of(context).pushReplacement(
