@@ -4,30 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 void createUserBasicData(User user, Map userBasicProfile) {
   // Firestoreのインスタンスを取得
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
-  users.doc(user.uid).set({
+  Map<String, dynamic> initialUserData = {
     "id": user.uid,
-    "name": userBasicProfile["name"],
-  });
-  CollectionReference medicine = FirebaseFirestore.instance
-      .collection('users')
-      .doc(user.uid)
-      .collection('medicine');
-  /*medicine.doc('medicine').set({"medicine": <String>[]});*/
-  CollectionReference schedule = FirebaseFirestore.instance
-      .collection('users')
-      .doc(user.uid)
-      .collection('schedule');
-  /*schedule.doc('schedule').set({
-    'schedule': <Map<DateTime, String>>[] // key: DateTime, value: Content
-  });*/
-  CollectionReference caregivers = FirebaseFirestore.instance
-      .collection('users')
-      .doc(user.uid)
-      .collection('caregivers');
-  /*caregivers.doc('caregivers').set({
-    'caregivers': <Map<String, String>>[] // key: uid, value: name
-  });*/
+    ...userBasicProfile,
+  };
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  users.doc(user.uid).set(initialUserData);
+  
 }
 
 Widget RealTimeStreamDataWidget(stream, builder) {
