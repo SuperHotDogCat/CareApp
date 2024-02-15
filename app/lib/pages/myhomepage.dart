@@ -36,9 +36,8 @@ class _MyHomePageState extends State<MyHomePage> {
       pageIndex = index; //page遷移, 選択時の色遷移をする。
     });
   }
-
-  final settingsIndex = 2;
-  final homeIndex = 3;
+  final homeIndex = 2;
+  final settingsIndex = 3;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -52,11 +51,11 @@ class _MyHomePageState extends State<MyHomePage> {
         title: "Medicine",
         user: user,
       ),
-      SettingsPageBody(
+      HomePageBody(
         title: "Settings",
         user: user,
       ),
-      HomePageBody(
+      SettingsPageBody(
         title: "Home",
         user: user,
         scaffoldState: _scaffoldKey,
@@ -69,8 +68,8 @@ class _MyHomePageState extends State<MyHomePage> {
         user: user,
       ),
       MedicinePageDrawer(),
-      SettingsPageDrawer(),
-      HomePageDrawer(
+      HomePageDrawer(),
+      SettingsPageDrawer(
         user: user,
       ),
     ];
@@ -108,8 +107,8 @@ class _MyHomePageState extends State<MyHomePage> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.medical_services), label: 'Medicine'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: 'Settings'),
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+                icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
             //BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
           ],
           onTap: _onTapBottomNavigationBar,
