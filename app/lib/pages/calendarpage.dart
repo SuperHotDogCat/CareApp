@@ -44,7 +44,8 @@ class _CalendarPageState extends State<CalendarPageBody> {
       final Map<DateTime, List<DateTime>> fetchedTime = {};
       for (var doc in snapshot.docs) {
         var data = doc.data();
-        final date = data["Date"].toDate();
+        final date = data["Date"]
+            .toDate(); //For now, this app can only be used in Japan.
         final schedule = data["schedule"];
         final dateKey =
             DateTime(date.year, date.month, date.day); //To show the calendar
