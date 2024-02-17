@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,6 +19,8 @@ class _MedicinePageState extends State<MedicinePageBody> {
   List<String> medicineList = [];
   List<String> imagesList = [];
   List<List<bool>> boolList = [];
+  List<String> personList = [];
+  String selfName = "";
   User user;
 
   void _fetchData() async {
@@ -44,6 +48,72 @@ class _MedicinePageState extends State<MedicinePageBody> {
         imagesList = tmpImagesList;
         boolList = tmpBoolList;
       });
+    });
+
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+    if (snapshot.exists) {
+      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+      List<String> tmpPersonList = [];
+      String tmpSelfName = "";
+      for (var index = 0; index < medicineList.length; index++) {
+        tmpPersonList.add(data["name"]);
+        tmpSelfName = data["name"];
+      }
+      setState(() {
+        personList = tmpPersonList;
+        selfName = tmpSelfName;
+      });
+    }
+  }
+
+  void _fetchCarersData() async {
+    //To do: Careしている人のデータも取る
+    //Map<String, String> tmpCarersNames = {};
+    List<String> tmpCarersNames = [];
+    List<String> tmpCarersIds = [];
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('carers')
+        .snapshots()
+        .listen((snapshot) {
+      for (var doc in snapshot.docs) {
+        var data = doc.data();
+        tmpCarersNames.add(data["name"]);
+        tmpCarersIds.add(data["id"]);
+      }
+      for (var index = 0; index < tmpCarersNames.length; ++index) {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(tmpCarersIds[index])
+            .collection('medicine')
+            .snapshots()
+            .listen((snapshot) {
+          List<String> tmpMedicineList = medicineList;
+          List<String> tmpImagesList = imagesList;
+          List<List<bool>> tmpBoolList = boolList;
+          List<String> tmpPersonList = personList;
+          for (var doc in snapshot.docs) {
+            var data = doc.data();
+            tmpMedicineList.add(data["medicine"]);
+            tmpImagesList.add("assets/medimages/" + data["imgPath"]);
+            List<bool> bools = data["medicineTime"]
+                .whereType<bool>()
+                .toList(); //こうキャストしなければいけない
+            tmpBoolList.add(bools);
+            tmpPersonList.add(tmpCarersNames[index]);
+          }
+          setState(() {
+            medicineList = tmpMedicineList;
+            imagesList = tmpImagesList;
+            boolList = tmpBoolList;
+            personList = tmpPersonList;
+          });
+        });
+      }
     });
   }
 
@@ -129,6 +199,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
   @override
   void initState() {
     _fetchData();
+    _fetchCarersData();
   }
 
   @override

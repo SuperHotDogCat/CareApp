@@ -14,7 +14,7 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Text('Settings Drawer Header'),
+            child: Text('Home Drawer Header'),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.inversePrimary,
             ),
