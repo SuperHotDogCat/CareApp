@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:csv/csv.dart';
 
 void createUserBasicData(User user, Map userBasicProfile) {
   // Firestoreのインスタンスを取得
@@ -42,4 +44,10 @@ Map<String, dynamic> fetchUserDataWithNameAndId(User user) {
     }
   });
   return userData;
+}
+
+Future<List<List<dynamic>>> loadCsvData(String path) async {
+  final csvData = await rootBundle.loadString(path);
+  List<List<dynamic>> csvTable = const CsvToListConverter().convert(csvData);
+  return csvTable;
 }
