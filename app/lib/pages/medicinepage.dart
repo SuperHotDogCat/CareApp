@@ -3,6 +3,7 @@ import 'dart:html';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:path/path.dart';
 
 class MedicinePageBody extends StatefulWidget {
   const MedicinePageBody({super.key, required this.title, required this.user});
@@ -126,8 +127,19 @@ class _MedicinePageState extends State<MedicinePageBody> {
         .delete();
   }
 
-  Widget _timeRow(List<bool> boolListContent) {
+  Widget _timeRow(List<bool> boolListContent, String userName) {
     List<Widget> widgets = [];
+    widgets.add(Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.horizontal(),
+        color: Colors.white,
+      ),
+      padding: EdgeInsets.all(4.0),
+      child: Text(
+        userName,
+        style: TextStyle(fontSize: 14.0),
+      ),
+    ));
     if (boolListContent[0] == true) {
       widgets.add(
         Container(
@@ -135,7 +147,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
             borderRadius: BorderRadius.circular(10.0),
             color: Colors.pink[200],
           ),
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(4.0),
           child: Text(
             'Morning',
             style: TextStyle(fontSize: 14.0),
@@ -153,7 +165,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
             borderRadius: BorderRadius.circular(10.0),
             color: Colors.yellow[200],
           ),
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(4.0),
           child: Text(
             'Lunch',
             style: TextStyle(fontSize: 14.0),
@@ -171,7 +183,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
             borderRadius: BorderRadius.circular(10.0),
             color: Colors.blue[200],
           ),
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(4.0),
           child: Text(
             'Dinner',
             style: TextStyle(fontSize: 14.0),
@@ -212,7 +224,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
           child: ListTile(
             leading: medicineImageFromAsset(imagesList[index]),
             title: Text(medicineList[index]),
-            subtitle: _timeRow(boolList[index]),
+            subtitle: _timeRow(boolList[index], personList[index]),
             trailing: IconButton(
               icon: Icon(Icons.close),
               onPressed: () =>
