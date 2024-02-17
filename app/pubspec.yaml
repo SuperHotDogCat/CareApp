@@ -40,6 +40,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   intl: ^0.19.0 #DateTime
   csv: ^5.0.0
+  path: ^1.8.0
 
 dev_dependencies:
   flutter_test:
@@ -95,3 +96,4 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
   assets:
     - assets/
+    - assets/medimages/

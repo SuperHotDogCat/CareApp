@@ -68,7 +68,9 @@ class _MyHomePageState extends State<MyHomePage> {
       CalendarPageDrawer(
         user: user,
       ),
-      MedicinePageDrawer(),
+      MedicinePageDrawer(
+        user: user,
+      ),
       HomePageDrawer(),
       SettingsPageDrawer(
         user: user,

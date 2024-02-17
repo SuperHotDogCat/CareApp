@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:app/utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:math';
+import 'package:path/path.dart' as path;
 
 class MedicinePageDrawer extends StatefulWidget {
-  MedicinePageDrawer({super.key});
+  MedicinePageDrawer({super.key, required this.user});
+  final User user;
   @override
   _MedicinePageDrawerState createState() => _MedicinePageDrawerState();
 }
@@ -12,6 +16,7 @@ class _MedicinePageDrawerState extends State<MedicinePageDrawer> {
   List<List<dynamic>> csvData = [];
   List<String> medicineNames = [];
   List<String> searchResults = [];
+  Map<String, String> imgNameMap = {}; // {medicineName: imgName}
 
   void _loadData() async {
     // load CSV DATA
@@ -21,11 +26,14 @@ class _MedicinePageDrawerState extends State<MedicinePageDrawer> {
       csvData = tmpCsvData;
     });
     List<String> tmpMedicineNames = [];
+    Map<String, String> tmpImgNameMap = {};
     for (var index = 1; index < csvData.length; ++index) {
       tmpMedicineNames.add(csvData[index][0]);
+      tmpImgNameMap[csvData[index][0]] = path.basename(csvData[index][2]);
     }
     setState(() {
       medicineNames = tmpMedicineNames;
+      imgNameMap = tmpImgNameMap;
     });
   }
 
@@ -84,7 +92,10 @@ class _MedicinePageDrawerState extends State<MedicinePageDrawer> {
                               context: context,
                               builder: (context) {
                                 return MedicineTimeSettingDialog(
-                                    medicineName: searchResults[index]);
+                                  medicineName: searchResults[index],
+                                  saveName: imgNameMap[searchResults[index]],
+                                  user: widget.user,
+                                );
                               });
                         }),
                   );
@@ -97,8 +108,11 @@ class _MedicinePageDrawerState extends State<MedicinePageDrawer> {
 }
 
 class MedicineTimeSettingDialog extends StatefulWidget {
-  MedicineTimeSettingDialog({required this.medicineName});
+  MedicineTimeSettingDialog(
+      {required this.medicineName, required this.saveName, required this.user});
   final String medicineName;
+  final String? saveName;
+  final User user;
 
   @override
   _MedicineTimeSettingDialogState createState() =>
@@ -109,6 +123,18 @@ class _MedicineTimeSettingDialogState extends State<MedicineTimeSettingDialog> {
   bool isMorningSelected = false;
   bool isNoonSelected = false;
   bool isNightSelected = false;
+
+  void _addData(String medicineName) async {
+    CollectionReference collection = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.user.uid)
+        .collection('medicine');
+    collection.doc(medicineName).set({
+      "medicine": medicineName,
+      "imgPath": widget.saveName,
+      "medicineTime": [isMorningSelected, isNoonSelected, isNightSelected]
+    }, SetOptions(merge: true));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -176,6 +202,7 @@ class _MedicineTimeSettingDialogState extends State<MedicineTimeSettingDialog> {
           child: Text('保存'),
           onPressed: () {
             // ここで設定を保存する処理を記述
+            _addData(widget.medicineName);
             Navigator.of(context).pop();
           },
         ),
