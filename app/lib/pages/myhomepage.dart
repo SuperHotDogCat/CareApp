@@ -77,16 +77,33 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     ];
 
+    final _leadings = [
+      IconButton(
+        icon: Icon(Icons.add),
+        onPressed: () {
+          _scaffoldKey.currentState?.openDrawer();
+        },
+      ),
+      IconButton(
+        icon: Icon(Icons.add),
+        onPressed: () {
+          _scaffoldKey.currentState?.openDrawer();
+        },
+      ),
+      Container(), //delete container
+      IconButton(
+        icon: Icon(Icons.add),
+        onPressed: () {
+          _scaffoldKey.currentState?.openDrawer();
+        },
+      ),
+    ];
+
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          leading: IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              _scaffoldKey.currentState?.openDrawer();
-            },
-          ), // plusアイコンを使用
+          leading: _leadings[pageIndex], // plusアイコンを使用
           title: Text(widget.title),
           actions: [
             IconButton(

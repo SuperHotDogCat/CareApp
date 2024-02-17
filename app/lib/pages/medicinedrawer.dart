@@ -49,7 +49,7 @@ class _MedicinePageDrawerState extends State<MedicinePageDrawer> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Text('Medicine Drawer Header'),
+            child: Text('処方薬の設定'),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.inversePrimary,
             ),
