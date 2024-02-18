@@ -33,7 +33,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
         .doc(user.uid)
         .collection('medicine')
         .snapshots()
-        .listen((snapshot) {
+        .listen((snapshot) async {
       List<String> tmpMedicineList = [];
       List<String> tmpImagesList = [];
       List<List<bool>> tmpBoolList = [];
@@ -46,31 +46,35 @@ class _MedicinePageState extends State<MedicinePageBody> {
             data["medicineTime"].whereType<bool>().toList(); //こうキャストしなければいけない
         tmpBoolList.add(bools);
       }
-
       setState(() {
-        medicineList = tmpMedicineList;
-        imagesList = tmpImagesList;
-        boolList = tmpBoolList;
+        medicineList.clear();
+        imagesList.clear();
+        boolList.clear();
+        medicineList.addAll(tmpMedicineList);
+        imagesList.addAll(tmpImagesList);
+        boolList.addAll(tmpBoolList);
+      });
+
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .snapshots()
+          .listen((userData) {
+        if (userData.exists) {
+          Map<String, dynamic> data = userData.data() as Map<String, dynamic>;
+          String tmpSelfName = data["name"];
+          List<String> tmpPersonList = List.generate(
+            tmpMedicineList.length,
+            (index) => data["name"].toString(),
+          );
+          setState(() {
+            personList.clear();
+            personList = tmpPersonList;
+            selfName = tmpSelfName;
+          });
+        }
       });
     });
-
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .get();
-    if (snapshot.exists) {
-      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-      List<String> tmpPersonList = [];
-      String tmpSelfName = "";
-      for (var index = 0; index < medicineList.length; index++) {
-        tmpPersonList.add(data["name"]);
-        tmpSelfName = data["name"];
-      }
-      setState(() {
-        personList = tmpPersonList;
-        selfName = tmpSelfName;
-      });
-    }
   }
 
   void _fetchCarersData() async {
@@ -198,8 +202,13 @@ class _MedicinePageState extends State<MedicinePageBody> {
         ),
       );
     }
-    return Row(
-      children: widgets,
+    return SizedBox(
+      width: 200,
+      height: 25,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: widgets,
+      ),
     );
   }
 
@@ -246,7 +255,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
               ),
             );
           } catch (e) {
-            return CircularProgressIndicator();
+            return Text('...Loading');
           }
         } else {
           return Card(
