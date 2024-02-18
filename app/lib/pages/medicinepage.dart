@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,11 +19,16 @@ class _MedicinePageState extends State<MedicinePageBody> {
   List<String> imagesList = [];
   List<List<bool>> boolList = [];
   List<String> personList = [];
+  //for carers
+  List<String> carersMedicineList = [];
+  List<String> carersImagesList = [];
+  List<List<bool>> carersBoolList = [];
+  List<String> carersPersonList = [];
   String selfName = "";
   User user;
 
   void _fetchData() async {
-    await FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
         .collection('medicine')
@@ -75,7 +78,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
     //Map<String, String> tmpCarersNames = {};
     List<String> tmpCarersNames = [];
     List<String> tmpCarersIds = [];
-    await FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
         .collection('carers')
@@ -86,6 +89,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
         tmpCarersNames.add(data["name"]);
         tmpCarersIds.add(data["id"]);
       }
+      //iteration per carers
       for (var index = 0; index < tmpCarersNames.length; ++index) {
         FirebaseFirestore.instance
             .collection('users')
@@ -93,10 +97,10 @@ class _MedicinePageState extends State<MedicinePageBody> {
             .collection('medicine')
             .snapshots()
             .listen((snapshot) {
-          List<String> tmpMedicineList = medicineList;
-          List<String> tmpImagesList = imagesList;
-          List<List<bool>> tmpBoolList = boolList;
-          List<String> tmpPersonList = personList;
+          List<String> tmpMedicineList = [];
+          List<String> tmpImagesList = [];
+          List<List<bool>> tmpBoolList = [];
+          List<String> tmpPersonList = [];
           for (var doc in snapshot.docs) {
             var data = doc.data();
             tmpMedicineList.add(data["medicine"]);
@@ -108,10 +112,10 @@ class _MedicinePageState extends State<MedicinePageBody> {
             tmpPersonList.add(tmpCarersNames[index]);
           }
           setState(() {
-            medicineList = tmpMedicineList;
-            imagesList = tmpImagesList;
-            boolList = tmpBoolList;
-            personList = tmpPersonList;
+            carersMedicineList.addAll(tmpMedicineList);
+            carersImagesList.addAll(tmpImagesList);
+            carersBoolList.addAll(tmpBoolList);
+            carersPersonList.addAll(tmpPersonList);
           });
         });
       }
@@ -210,6 +214,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
 
   @override
   void initState() {
+    super.initState();
     _fetchData();
     _fetchCarersData();
   }
@@ -218,23 +223,43 @@ class _MedicinePageState extends State<MedicinePageBody> {
   Widget build(BuildContext context) {
     return Scrollbar(
         child: ListView.builder(
-      itemCount: medicineList.length,
+      itemCount: medicineList.length + carersMedicineList.length,
       itemBuilder: (context, index) {
-        return Card(
-          child: ListTile(
-            leading: medicineImageFromAsset(imagesList[index]),
-            title: Text(medicineList[index]),
-            subtitle: _timeRow(boolList[index], personList[index]),
-            trailing: IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () =>
-                  _deleteMedicineData(user.uid, medicineList[index]),
+        if (index < medicineList.length) {
+          try {
+            return Card(
+              child: ListTile(
+                leading: medicineImageFromAsset(imagesList[index]),
+                title: Text(medicineList[index]),
+                subtitle: _timeRow(boolList[index], personList[index]),
+                trailing: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      _deleteMedicineData(user.uid, medicineList[index]);
+                    }),
+                onTap: () {
+                  // 薬の編集画面
+                },
+              ),
+            );
+          } catch (e) {
+            return CircularProgressIndicator();
+          }
+        } else {
+          return Card(
+            child: ListTile(
+              leading: medicineImageFromAsset(
+                  carersImagesList[index - medicineList.length]),
+              title: Text(carersMedicineList[index - medicineList.length]),
+              subtitle: _timeRow(carersBoolList[index - medicineList.length],
+                  carersPersonList[index - medicineList.length]),
+              trailing: IconButton(icon: Icon(Icons.close), onPressed: () {}),
+              onTap: () {
+                // 薬の編集画面
+              },
             ),
-            onTap: () {
-              // 薬の編集画面
-            },
-          ),
-        );
+          );
+        }
       },
     ));
   }
