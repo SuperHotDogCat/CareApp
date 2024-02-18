@@ -5,17 +5,15 @@ import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPageBody extends StatefulWidget {
   const CalendarPageBody({super.key, required this.title, required this.user});
-  final title;
+  final String title;
   final User user;
   @override
-  State<CalendarPageBody> createState() => _CalendarPageState(user: user);
+  CalendarPageState createState() => CalendarPageState();
 }
 
-class _CalendarPageState extends State<CalendarPageBody> {
-  _CalendarPageState({required this.user});
+class CalendarPageState extends State<CalendarPageBody> {
   DateTime _focused = DateTime.now();
   DateTime _selected = DateTime.now();
-  User user;
 
   Map<DateTime, List<dynamic>> _events = {};
   Map<DateTime, List<DateTime>> _detailedTime = {};
@@ -36,7 +34,7 @@ class _CalendarPageState extends State<CalendarPageBody> {
   void _fetchEvents() async {
     FirebaseFirestore.instance
         .collection('users')
-        .doc(user.uid)
+        .doc(widget.user.uid)
         .collection('schedule')
         .snapshots()
         .listen((snapshot) {
@@ -101,7 +99,7 @@ class _CalendarPageState extends State<CalendarPageBody> {
               if (_events.containsKey(datelocal)) {
                 return Center(
                   child: Container(
-                    margin: EdgeInsets.all(4.0),
+                    margin: const EdgeInsets.all(4.0),
                     decoration: BoxDecoration(
                       color: Colors.blue[300],
                       borderRadius: BorderRadius.circular(8.0),
@@ -111,7 +109,7 @@ class _CalendarPageState extends State<CalendarPageBody> {
                     child: Center(
                       child: Text(
                         '${date.day}',
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
@@ -121,7 +119,7 @@ class _CalendarPageState extends State<CalendarPageBody> {
               }
             }),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           //To Do: ここにカレンダーをタップした時の予定を書く
           Expanded(
             child: ListView.builder(
@@ -129,10 +127,8 @@ class _CalendarPageState extends State<CalendarPageBody> {
               itemBuilder: (context, index) {
                 if (_selectedEvents[index] != "") {
                   var hourMinute =
-                      _selectedDetailedTime[index].hour.toString() +
-                          ":" +
-                          _selectedDetailedTime[index].minute.toString();
-                  var content = hourMinute + " " + _selectedEvents[index];
+                      '${_selectedDetailedTime[index].hour.toString()}:${_selectedDetailedTime[index].minute.toString()}';
+                  var content = '$hourMinute ${_selectedEvents[index]}';
                   return Card(
                       child: ListTile(
                     title: Text(content),
