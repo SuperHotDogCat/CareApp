@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:path/path.dart';
 
 class MedicinePageBody extends StatefulWidget {
   const MedicinePageBody({super.key, required this.title, required this.user});
@@ -9,11 +8,10 @@ class MedicinePageBody extends StatefulWidget {
   final User user;
 
   @override
-  State<MedicinePageBody> createState() => _MedicinePageState(user: user);
+  MedicinePageState createState() => MedicinePageState();
 }
 
-class _MedicinePageState extends State<MedicinePageBody> {
-  _MedicinePageState({required this.user});
+class MedicinePageState extends State<MedicinePageBody> {
   // 薬リストのデータ
   List<String> medicineList = [];
   List<String> imagesList = [];
@@ -25,12 +23,11 @@ class _MedicinePageState extends State<MedicinePageBody> {
   List<List<bool>> carersBoolList = [];
   List<String> carersPersonList = [];
   String selfName = "";
-  User user;
 
   void _fetchData() async {
     FirebaseFirestore.instance
         .collection('users')
-        .doc(user.uid)
+        .doc(widget.user.uid)
         .collection('medicine')
         .snapshots()
         .listen((snapshot) async {
@@ -41,7 +38,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
       for (var doc in snapshot.docs) {
         var data = doc.data();
         tmpMedicineList.add(data["medicine"]);
-        tmpImagesList.add("assets/medimages/" + data["imgPath"]);
+        tmpImagesList.add('assets/medimages/${data["imgPath"]}');
         List<bool> bools =
             data["medicineTime"].whereType<bool>().toList(); //こうキャストしなければいけない
         tmpBoolList.add(bools);
@@ -57,7 +54,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
 
       FirebaseFirestore.instance
           .collection('users')
-          .doc(user.uid)
+          .doc(widget.user.uid)
           .snapshots()
           .listen((userData) {
         if (userData.exists) {
@@ -84,7 +81,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
     List<String> tmpCarersIds = [];
     FirebaseFirestore.instance
         .collection('users')
-        .doc(user.uid)
+        .doc(widget.user.uid)
         .collection('carers')
         .snapshots()
         .listen((snapshot) {
@@ -108,7 +105,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
           for (var doc in snapshot.docs) {
             var data = doc.data();
             tmpMedicineList.add(data["medicine"]);
-            tmpImagesList.add("assets/medimages/" + data["imgPath"]);
+            tmpImagesList.add("assets/medimages/${data["imgPath"]}");
             List<bool> bools = data["medicineTime"]
                 .whereType<bool>()
                 .toList(); //こうキャストしなければいけない
@@ -138,17 +135,17 @@ class _MedicinePageState extends State<MedicinePageBody> {
   Widget _timeRow(List<bool> boolListContent, String userName) {
     List<Widget> widgets = [];
     widgets.add(Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         borderRadius: BorderRadius.horizontal(),
         color: Colors.white,
       ),
-      padding: EdgeInsets.all(4.0),
+      padding: const EdgeInsets.all(4.0),
       child: Text(
         userName,
-        style: TextStyle(fontSize: 14.0),
+        style: const TextStyle(fontSize: 14.0),
       ),
     ));
-    widgets.add(SizedBox(
+    widgets.add(const SizedBox(
       width: 8,
     ));
     if (boolListContent[0] == true) {
@@ -158,14 +155,14 @@ class _MedicinePageState extends State<MedicinePageBody> {
             borderRadius: BorderRadius.circular(10.0),
             color: Colors.pink[200],
           ),
-          padding: EdgeInsets.all(4.0),
-          child: Text(
+          padding: const EdgeInsets.all(4.0),
+          child: const Text(
             'Morning',
             style: TextStyle(fontSize: 14.0),
           ),
         ),
       );
-      widgets.add(SizedBox(
+      widgets.add(const SizedBox(
         width: 8,
       ));
     }
@@ -176,14 +173,14 @@ class _MedicinePageState extends State<MedicinePageBody> {
             borderRadius: BorderRadius.circular(10.0),
             color: Colors.yellow[200],
           ),
-          padding: EdgeInsets.all(4.0),
-          child: Text(
+          padding: const EdgeInsets.all(4.0),
+          child: const Text(
             'Lunch',
             style: TextStyle(fontSize: 14.0),
           ),
         ),
       );
-      widgets.add(SizedBox(
+      widgets.add(const SizedBox(
         width: 8,
       ));
     }
@@ -194,8 +191,8 @@ class _MedicinePageState extends State<MedicinePageBody> {
             borderRadius: BorderRadius.circular(10.0),
             color: Colors.blue[200],
           ),
-          padding: EdgeInsets.all(4.0),
-          child: Text(
+          padding: const EdgeInsets.all(4.0),
+          child: const Text(
             'Dinner',
             style: TextStyle(fontSize: 14.0),
           ),
@@ -214,7 +211,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
 
   Widget medicineImageFromAsset(String imgPath) {
     if (imgPath.contains("noimage")) {
-      return SizedBox(
+      return const SizedBox(
         width: 50,
         height: 50,
         child: Text("No Medicine Image"),
@@ -245,9 +242,9 @@ class _MedicinePageState extends State<MedicinePageBody> {
                 title: Text(medicineList[index]),
                 subtitle: _timeRow(boolList[index], personList[index]),
                 trailing: IconButton(
-                    icon: Icon(Icons.close),
+                    icon: const Icon(Icons.close),
                     onPressed: () {
-                      _deleteMedicineData(user.uid, medicineList[index]);
+                      _deleteMedicineData(widget.user.uid, medicineList[index]);
                     }),
                 onTap: () {
                   // 薬の編集画面
@@ -255,7 +252,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
               ),
             );
           } catch (e) {
-            return Text('...Loading');
+            return const Text('...Loading');
           }
         } else {
           return Card(
@@ -266,23 +263,23 @@ class _MedicinePageState extends State<MedicinePageBody> {
               subtitle: _timeRow(carersBoolList[index - medicineList.length],
                   carersPersonList[index - medicineList.length]),
               trailing: IconButton(
-                  icon: Icon(Icons.close),
+                  icon: const Icon(Icons.close),
                   onPressed: () {
                     showDialog(
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text('警告'),
-                            content: Text('他の人が飲んでいる薬をリストから消すことはできません'),
+                            title: const Text('警告'),
+                            content: const Text('他の人が飲んでいる薬をリストから消すことはできません'),
                             actions: [
                               TextButton(
-                                child: Text('いいえ'),
+                                child:const  Text('いいえ'),
                                 onPressed: () {
                                   Navigator.of(context).pop(); // ダイアログを閉じる
                                 },
                               ),
                               TextButton(
-                                child: Text('はい'),
+                                child: const Text('はい'),
                                 onPressed: () {
                                   // はいがタップされた時の処理
                                   Navigator.of(context).pop(); // ダイアログを閉じる
