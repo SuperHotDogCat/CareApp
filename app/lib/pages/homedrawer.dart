@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class HomePageDrawer extends StatefulWidget {
-  HomePageDrawer({super.key});
+  const HomePageDrawer({super.key});
   @override
-  _HomePageDrawerState createState() => _HomePageDrawerState();
+  HomePageDrawerState createState() => HomePageDrawerState();
 }
 
-class _HomePageDrawerState extends State<HomePageDrawer> {
+class HomePageDrawerState extends State<HomePageDrawer> {
   @override
   Widget build(context) {
     return Drawer(
@@ -14,20 +14,20 @@ class _HomePageDrawerState extends State<HomePageDrawer> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Text('Home Drawer Header'),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.inversePrimary,
             ),
+            child: const Text('Home Drawer Header'),
           ),
           ListTile(
-            title: Text('項目 1'),
+            title: const Text('項目 1'),
             onTap: () {
               // Drawer内の項目がタップされたときの動作
               Navigator.pop(context); // Drawerを閉じる
             },
           ),
           ListTile(
-            title: Text('項目 2'),
+            title: const Text('項目 2'),
             onTap: () {
               // Drawer内の項目がタップされたときの動作
               Navigator.pop(context); // Drawerを閉じる
