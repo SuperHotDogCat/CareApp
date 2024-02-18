@@ -6,8 +6,7 @@ class SettingsPageDrawer extends StatefulWidget {
   SettingsPageDrawer({super.key, required this.user});
   final User user;
   @override
-  SettingsPageDrawerState createState() =>
-      SettingsPageDrawerState();
+  SettingsPageDrawerState createState() => SettingsPageDrawerState();
 }
 
 class SettingsPageDrawerState extends State<SettingsPageDrawer> {
@@ -27,8 +26,9 @@ class SettingsPageDrawerState extends State<SettingsPageDrawer> {
     final querySnapshot =
         await collection.where('id', isEqualTo: addCareGiverId).get();
     //add caregivers
-    DocumentReference caregivers =
-        await FirebaseFirestore.instance.collection('users').doc(widget.user.uid);
+    DocumentReference caregivers = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.user.uid);
 
     DocumentSnapshot selfSnapShot = await FirebaseFirestore.instance
         .collection('users')
@@ -57,7 +57,9 @@ class SettingsPageDrawerState extends State<SettingsPageDrawer> {
             .collection('users')
             .doc(data["id"])
             .collection("carers");
-        carers.doc(widget.user.uid).set({"id": widget.user.uid, "name": selfName});
+        carers
+            .doc(widget.user.uid)
+            .set({"id": widget.user.uid, "name": selfName});
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('介護者を登録しました')),
         );
@@ -87,8 +89,9 @@ class SettingsPageDrawerState extends State<SettingsPageDrawer> {
         );
       });
       //Add data
-      DocumentReference userData =
-          await FirebaseFirestore.instance.collection('users').doc(widget.user.uid);
+      DocumentReference userData = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.user.uid);
       userData.set({mealType: newTime}, SetOptions(merge: true)); //add Data
     }
   }

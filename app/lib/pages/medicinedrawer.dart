@@ -110,7 +110,10 @@ class MedicinePageDrawerState extends State<MedicinePageDrawer> {
 
 class MedicineTimeSettingDialog extends StatefulWidget {
   const MedicineTimeSettingDialog(
-      {super.key, required this.medicineName, required this.saveName, required this.user});
+      {super.key,
+      required this.medicineName,
+      required this.saveName,
+      required this.user});
   final String medicineName;
   final String? saveName;
   final User user;

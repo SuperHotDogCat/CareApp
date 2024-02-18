@@ -244,7 +244,8 @@ class MedicinePageState extends State<MedicinePageBody> {
                 trailing: IconButton(
                     icon: const Icon(Icons.close),
                     onPressed: () {
-                      _deleteMedicineData(widget.user.uid, medicineList[index]);
+                      _deleteMedicineData(
+                          widget.user.uid, medicineList[index]);
                     }),
                 onTap: () {
                   // 薬の編集画面
@@ -273,7 +274,7 @@ class MedicinePageState extends State<MedicinePageBody> {
                             content: const Text('他の人が飲んでいる薬をリストから消すことはできません'),
                             actions: [
                               TextButton(
-                                child:const  Text('いいえ'),
+                                child: const Text('いいえ'),
                                 onPressed: () {
                                   Navigator.of(context).pop(); // ダイアログを閉じる
                                 },

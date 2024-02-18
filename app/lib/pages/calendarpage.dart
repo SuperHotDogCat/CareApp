@@ -25,7 +25,8 @@ class CalendarPageState extends State<CalendarPageBody> {
     super.initState();
     _fetchEvents();
     _selectedEvents =
-        _events[DateTime(_selected.year, _selected.month, _selected.day)] ?? [];
+        _events[DateTime(_selected.year, _selected.month, _selected.day)] ??
+            [];
     _selectedDetailedTime = _detailedTime[
             DateTime(_selected.year, _selected.month, _selected.day)] ??
         [];

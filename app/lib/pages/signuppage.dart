@@ -61,130 +61,129 @@ class SignUpState extends State<SignUpPage> {
           ),
         ],
       ),
-      body: 
-      SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Center(
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextFormField(
-                  decoration: const InputDecoration(labelText: "メールアドレス"),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextFormField(
+                    decoration: const InputDecoration(labelText: "メールアドレス"),
+                    onChanged: (String value) {
+                      setState(() {
+                        email = value;
+                      });
+                    }),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'パスワード'),
+                  obscureText: true,
                   onChanged: (String value) {
                     setState(() {
-                      email = value;
+                      password = value;
                     });
-                  }),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'パスワード'),
-                obscureText: true,
-                onChanged: (String value) {
-                  setState(() {
-                    password = value;
-                  });
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'パスワード確認'),
-                obscureText: true,
-                onChanged: (String value) {
-                  setState(() {
-                    passwordConfirmation = value;
-                  });
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: '名前'),
-                onChanged: (String value) {
-                  setState(() {
-                    userName = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 8),
-              Column(children: [
-                ListTile(
-                  onTap: () => _mealTimePicker("breakfastTime", _breakfastTime,
-                      (newTime) {
-                    _breakfastTime = newTime;
-                  }),
-                  title: const Text('朝食の時間を設定'),
-                  leading: const Icon(Icons.watch),
-                ),
-                const Divider()
-              ]),
-              Column(children: [
-                ListTile(
-                  onTap: () =>
-                      _mealTimePicker("lunchTime", _lunchTime, (newTime) {
-                    _lunchTime = newTime;
-                  }),
-                  title: const Text('昼食の時間を設定'),
-                  leading: const Icon(Icons.watch),
-                ),
-                const Divider()
-              ]),
-              Column(children: [
-                ListTile(
-                  onTap: () =>
-                      _mealTimePicker("dinnerTime", _dinnerTime, (newTime) {
-                    _dinnerTime = newTime;
-                  }),
-                  title: const Text('夜食の時間を設定'),
-                  leading: const Icon(Icons.watch),
-                ),
-                const Divider()
-              ]),
-              Container(
-                padding: const EdgeInsets.all(8),
-                // メッセージ表示
-                child: Text(infoText),
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  child: const Text("ユーザー登録"),
-                  onPressed: () async {
-                    try {
-                      if (password == passwordConfirmation) {
-                        final FirebaseAuth auth = FirebaseAuth.instance;
-                        final result =
-                            await auth.createUserWithEmailAndPassword(
-                                email: email, password: password);
-                        var userBasicProfile = {
-                          "name": userName,
-                          "breakfastTime": _breakfastTime,
-                          "lunchTime": _lunchTime,
-                          "dinnerTime": _dinnerTime
-                        };
-                        //createUserBasicData
-                        createUserBasicData(result.user!, userBasicProfile);
-                        await Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context) {
-                            return MyHomePage(
-                                title: "CareApp", user: result.user!);
-                          }),
-                        );
-                      } else {
-                        setState(() {
-                          infoText = "パスワードの確認をしてください。";
-                        });
-                      }
-                    } catch (e) {
-                      setState(() {
-                        infoText = "ユーザー登録に失敗しました。${e.toString()}";
-                      });
-                    }
                   },
                 ),
-              ),
-            ],
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'パスワード確認'),
+                  obscureText: true,
+                  onChanged: (String value) {
+                    setState(() {
+                      passwordConfirmation = value;
+                    });
+                  },
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: '名前'),
+                  onChanged: (String value) {
+                    setState(() {
+                      userName = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 8),
+                Column(children: [
+                  ListTile(
+                    onTap: () => _mealTimePicker(
+                        "breakfastTime", _breakfastTime, (newTime) {
+                      _breakfastTime = newTime;
+                    }),
+                    title: const Text('朝食の時間を設定'),
+                    leading: const Icon(Icons.watch),
+                  ),
+                  const Divider()
+                ]),
+                Column(children: [
+                  ListTile(
+                    onTap: () =>
+                        _mealTimePicker("lunchTime", _lunchTime, (newTime) {
+                      _lunchTime = newTime;
+                    }),
+                    title: const Text('昼食の時間を設定'),
+                    leading: const Icon(Icons.watch),
+                  ),
+                  const Divider()
+                ]),
+                Column(children: [
+                  ListTile(
+                    onTap: () =>
+                        _mealTimePicker("dinnerTime", _dinnerTime, (newTime) {
+                      _dinnerTime = newTime;
+                    }),
+                    title: const Text('夜食の時間を設定'),
+                    leading: const Icon(Icons.watch),
+                  ),
+                  const Divider()
+                ]),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  // メッセージ表示
+                  child: Text(infoText),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    child: const Text("ユーザー登録"),
+                    onPressed: () async {
+                      try {
+                        if (password == passwordConfirmation) {
+                          final FirebaseAuth auth = FirebaseAuth.instance;
+                          final result =
+                              await auth.createUserWithEmailAndPassword(
+                                  email: email, password: password);
+                          var userBasicProfile = {
+                            "name": userName,
+                            "breakfastTime": _breakfastTime,
+                            "lunchTime": _lunchTime,
+                            "dinnerTime": _dinnerTime
+                          };
+                          //createUserBasicData
+                          createUserBasicData(result.user!, userBasicProfile);
+                          await Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) {
+                              return MyHomePage(
+                                  title: "CareApp", user: result.user!);
+                            }),
+                          );
+                        } else {
+                          setState(() {
+                            infoText = "パスワードの確認をしてください。";
+                          });
+                        }
+                      } catch (e) {
+                        setState(() {
+                          infoText = "ユーザー登録に失敗しました。${e.toString()}";
+                        });
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ),
     );
   }
 }

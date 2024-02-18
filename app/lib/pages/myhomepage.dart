@@ -21,7 +21,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-
   var pageIndex = 0;
   void _onTapBottomNavigationBar(int index) {
     setState(() {

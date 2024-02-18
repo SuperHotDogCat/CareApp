@@ -14,8 +14,7 @@ class SettingsPageBody extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldState;
 
   @override
-  SettingsPageState createState() =>
-      SettingsPageState();
+  SettingsPageState createState() => SettingsPageState();
 }
 
 class SettingsPageState extends State<SettingsPageBody> {
