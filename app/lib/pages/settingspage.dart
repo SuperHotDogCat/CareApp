@@ -192,7 +192,7 @@ class _SettingsPageState extends State<SettingsPageBody> {
                 height: 16,
               ),
               Text(
-                '自分の介護をしてくれる人',
+                '自分の介護をしている人',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               SizedBox(
