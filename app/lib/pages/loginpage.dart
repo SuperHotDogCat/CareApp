@@ -4,11 +4,12 @@ import 'myhomepage.dart';
 import 'signuppage.dart';
 
 class LogInPage extends StatefulWidget {
+  const LogInPage({super.key});
   @override
-  _LogInPageState createState() => _LogInPageState();
+  LogInPageState createState() => LogInPageState();
 }
 
-class _LogInPageState extends State<LogInPage> {
+class LogInPageState extends State<LogInPage> {
   // メッセージ表示用
   String infoText = '';
   // 入力したメールアドレス・パスワード
@@ -19,69 +20,71 @@ class _LogInPageState extends State<LogInPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("Log in"),
+        title: const Text("Log in"),
       ),
       body: Center(
         child: Container(
-          padding: EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
           child: AutofillGroup(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 TextFormField(
-                  decoration: InputDecoration(labelText: "メールアドレス"),
+                  decoration: const InputDecoration(labelText: "メールアドレス"),
                   onChanged: (String value) {
                     setState(() {
                       email = value;
                     });
                   },
                   keyboardType: TextInputType.emailAddress,
-                  autofillHints: [AutofillHints.email],
+                  autofillHints: const [AutofillHints.email],
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'パスワード'),
+                  decoration: const InputDecoration(labelText: 'パスワード'),
                   obscureText: true,
                   onChanged: (String value) {
                     setState(() {
                       password = value;
                     });
                   },
-                  autofillHints: [AutofillHints.password],
+                  autofillHints: const [AutofillHints.password],
                 ),
                 Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   // メッセージ表示
                   child: Text(infoText),
                 ),
-                SizedBox(height: 8),
-                Container(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    child: Text("ログイン"),
-                    onPressed: () async {
-                      try {
-                        final FirebaseAuth auth = FirebaseAuth.instance;
-                        final result = await auth.signInWithEmailAndPassword(
-                            email: email, password: password);
-                        await Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context) {
-                            return MyHomePage(
-                                title: "CareApp", user: result.user!);
-                          }),
-                        );
-                      } catch (e) {
-                        setState(() {
-                          infoText = "ログインに失敗しました。${e.toString()}";
-                        });
-                      }
-                    },
-                  ),
-                ),
-                SizedBox(height: 8),
-                Container(
+                const SizedBox(height: 8),
+                SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                        child: const Text("ログイン"),
+                        onPressed: () async {
+                          final FirebaseAuth auth = FirebaseAuth.instance;
+                          await auth
+                              .signInWithEmailAndPassword(
+                                  email: email, password: password)
+                              .then(
+                            (result) async {
+                              try {
+                                await Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(builder: (context) {
+                                  return MyHomePage(
+                                      title: "CareApp", user: result.user!);
+                                }));
+                              } catch (e) {
+                                setState(() {
+                                  infoText = "ログインに失敗しました。${e.toString()}";
+                                });
+                              }
+                            },
+                          );
+                        })),
+                const SizedBox(height: 8),
+                SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                      child: Text("ユーザー登録"),
+                      child: const Text("ユーザー登録"),
                       onPressed: () async {
                         await Navigator.of(context).pushReplacement(
                             MaterialPageRoute(builder: (context) {
