@@ -144,6 +144,9 @@ class _MedicinePageState extends State<MedicinePageBody> {
         style: TextStyle(fontSize: 14.0),
       ),
     ));
+    widgets.add(SizedBox(
+      width: 8,
+    ));
     if (boolListContent[0] == true) {
       widgets.add(
         Container(
@@ -253,7 +256,33 @@ class _MedicinePageState extends State<MedicinePageBody> {
               title: Text(carersMedicineList[index - medicineList.length]),
               subtitle: _timeRow(carersBoolList[index - medicineList.length],
                   carersPersonList[index - medicineList.length]),
-              trailing: IconButton(icon: Icon(Icons.close), onPressed: () {}),
+              trailing: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text('警告'),
+                            content: Text('他の人が飲んでいる薬をリストから消すことはできません'),
+                            actions: [
+                              TextButton(
+                                child: Text('いいえ'),
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // ダイアログを閉じる
+                                },
+                              ),
+                              TextButton(
+                                child: Text('はい'),
+                                onPressed: () {
+                                  // はいがタップされた時の処理
+                                  Navigator.of(context).pop(); // ダイアログを閉じる
+                                },
+                              ),
+                            ],
+                          );
+                        });
+                  }),
               onTap: () {
                 // 薬の編集画面
               },
