@@ -9,13 +9,11 @@ class HomePageBody extends StatefulWidget {
   final User user;
 
   @override
-  State<HomePageBody> createState() => _HomePageState(user: user);
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePageBody> {
-  _HomePageState({required this.user});
+class HomePageState extends State<HomePageBody> {
   // 薬リストのデータ
-  User user;
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +24,10 @@ class _HomePageState extends State<HomePageBody> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             StreamBuilder<DocumentSnapshot>(
-              stream: fetchUserDataSnapShots(user),
+              stream: fetchUserDataSnapShots(widget.user),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
                 // ドキュメントからデータを取得
                 Map<String, dynamic> userData =
@@ -38,8 +36,8 @@ class _HomePageState extends State<HomePageBody> {
                 String id = userData['id'] ?? ''; // idがnullの場合は空文字を表示
                 return Column(
                   children: [
-                    Row(children: [Text("Name: "), Text(name)]),
-                    Row(children: [Text("Id: "), Text(id)]),
+                    Row(children: [const Text("Name: "), Text(name)]),
+                    Row(children: [const Text("Id: "), Text(id)]),
                   ],
                 );
               },
