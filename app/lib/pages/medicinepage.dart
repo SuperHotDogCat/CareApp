@@ -204,7 +204,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
     }
     return SizedBox(
       width: 200,
-      height: 25,
+      height: 30,
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: widgets,
