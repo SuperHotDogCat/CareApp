@@ -56,6 +56,7 @@ class _SettingsPageState extends State<SettingsPageBody> {
   }
 
   List<String> careGivers = [];
+  List<String> carers = [];
 
   Map<String, DateTime> _MealTime = {
     "breakfast": DateTime.now(),
@@ -102,6 +103,23 @@ class _SettingsPageState extends State<SettingsPageBody> {
     });
   }
 
+  void _fetchCarers() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('carers')
+        .snapshots()
+        .listen((snapshot) {
+      List<String> tmpCarers = [];
+      for (var doc in snapshot.docs) {
+        tmpCarers.add(doc["name"]);
+      }
+      setState(() {
+        carers = tmpCarers;
+      });
+    });
+  }
+
   String _showTime(DateTime? dateTime) {
     String hour = '${dateTime?.hour}';
     String minute = '${dateTime?.minute}';
@@ -118,6 +136,7 @@ class _SettingsPageState extends State<SettingsPageBody> {
   void initState() {
     _fetchMealTime();
     _fetchCaregivers();
+    _fetchCarers();
   }
 
   @override
@@ -173,7 +192,7 @@ class _SettingsPageState extends State<SettingsPageBody> {
                 height: 16,
               ),
               Text(
-                '介護者',
+                '自分の介護をしてくれる人',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               SizedBox(
@@ -187,6 +206,25 @@ class _SettingsPageState extends State<SettingsPageBody> {
                       return Card(
                         child: ListTile(
                           title: Text(careGivers[index]),
+                        ),
+                      );
+                    }),
+              ),
+              Text(
+                '自分が介護をしている人',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              SizedBox(
+                height: min(carers.length * 50, 200),
+                child: ListView.builder(
+                    itemCount: carers.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        child: ListTile(
+                          title: Text(carers[index]),
                         ),
                       );
                     }),
