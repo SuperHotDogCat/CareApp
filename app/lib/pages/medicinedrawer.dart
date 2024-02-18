@@ -6,13 +6,13 @@ import 'dart:math';
 import 'package:path/path.dart' as path;
 
 class MedicinePageDrawer extends StatefulWidget {
-  MedicinePageDrawer({super.key, required this.user});
+  const MedicinePageDrawer({super.key, required this.user});
   final User user;
   @override
-  _MedicinePageDrawerState createState() => _MedicinePageDrawerState();
+  MedicinePageDrawerState createState() => MedicinePageDrawerState();
 }
 
-class _MedicinePageDrawerState extends State<MedicinePageDrawer> {
+class MedicinePageDrawerState extends State<MedicinePageDrawer> {
   List<List<dynamic>> csvData = [];
   List<String> medicineNames = [];
   List<String> searchResults = [];
@@ -39,6 +39,7 @@ class _MedicinePageDrawerState extends State<MedicinePageDrawer> {
 
   @override
   void initState() {
+    super.initState();
     _loadData();
   }
 
@@ -49,10 +50,10 @@ class _MedicinePageDrawerState extends State<MedicinePageDrawer> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Text('処方薬の設定'),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.inversePrimary,
             ),
+            child: const Text('処方薬の設定'),
           ),
           TextField(
             onChanged: (text) {
@@ -68,19 +69,19 @@ class _MedicinePageDrawerState extends State<MedicinePageDrawer> {
                 searchResults = filteredMedicines;
               });
             },
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: '薬の名前を入力してください',
               border: OutlineInputBorder(),
             ),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           SizedBox(
             height: min(searchResults.length * 50, 200),
             child: ListView.builder(
                 itemCount: searchResults.length,
                 itemBuilder: (context, index) {
                   return Card(
-                    margin: EdgeInsets.all(8),
+                    margin: const EdgeInsets.all(8),
                     elevation: 4,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
@@ -108,24 +109,24 @@ class _MedicinePageDrawerState extends State<MedicinePageDrawer> {
 }
 
 class MedicineTimeSettingDialog extends StatefulWidget {
-  MedicineTimeSettingDialog(
-      {required this.medicineName, required this.saveName, required this.user});
+  const MedicineTimeSettingDialog(
+      {super.key, required this.medicineName, required this.saveName, required this.user});
   final String medicineName;
   final String? saveName;
   final User user;
 
   @override
-  _MedicineTimeSettingDialogState createState() =>
-      _MedicineTimeSettingDialogState();
+  MedicineTimeSettingDialogState createState() =>
+      MedicineTimeSettingDialogState();
 }
 
-class _MedicineTimeSettingDialogState extends State<MedicineTimeSettingDialog> {
+class MedicineTimeSettingDialogState extends State<MedicineTimeSettingDialog> {
   bool isMorningSelected = false;
   bool isNoonSelected = false;
   bool isNightSelected = false;
 
-  void _addData(String medicineName) async {
-    CollectionReference collection = await FirebaseFirestore.instance
+  void _addData(String medicineName) {
+    CollectionReference collection = FirebaseFirestore.instance
         .collection('users')
         .doc(widget.user.uid)
         .collection('medicine');
@@ -144,7 +145,7 @@ class _MedicineTimeSettingDialogState extends State<MedicineTimeSettingDialog> {
         child: ListBody(
           children: <Widget>[
             SwitchListTile(
-              title: Row(
+              title: const Row(
                 children: [
                   Icon(Icons.wb_sunny),
                   SizedBox(width: 8),
@@ -159,7 +160,7 @@ class _MedicineTimeSettingDialogState extends State<MedicineTimeSettingDialog> {
               },
             ),
             SwitchListTile(
-              title: Row(
+              title: const Row(
                 children: [
                   Icon(Icons.wb_cloudy),
                   SizedBox(width: 8),
@@ -174,7 +175,7 @@ class _MedicineTimeSettingDialogState extends State<MedicineTimeSettingDialog> {
               },
             ),
             SwitchListTile(
-              title: Row(
+              title: const Row(
                 children: [
                   Icon(Icons.nights_stay),
                   SizedBox(width: 8),
@@ -193,13 +194,13 @@ class _MedicineTimeSettingDialogState extends State<MedicineTimeSettingDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text('キャンセル'),
+          child: const Text('キャンセル'),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
         TextButton(
-          child: Text('保存'),
+          child: const Text('保存'),
           onPressed: () {
             // ここで設定を保存する処理を記述
             _addData(widget.medicineName);
