@@ -5,11 +5,12 @@ import 'myhomepage.dart';
 import 'package:app/utils.dart';
 
 class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
   @override
-  _SignUpState createState() => _SignUpState();
+  SignUpState createState() => SignUpState();
 }
 
-class _SignUpState extends State<SignUpPage> {
+class SignUpState extends State<SignUpPage> {
   // メッセージ表示用
   String infoText = '';
   // 入力したメールアドレス・パスワード
@@ -46,35 +47,35 @@ class _SignUpState extends State<SignUpPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("Sign Up"),
+        title: const Text("Sign Up"),
         actions: [
           IconButton(
             onPressed: () async {
               await Navigator.of(context)
                   .pushReplacement(MaterialPageRoute(builder: (context) {
-                return LogInPage();
+                return const LogInPage();
               }));
             },
-            icon: Icon(Icons.chevron_left),
+            icon: const Icon(Icons.chevron_left),
             tooltip: "ログイン画面に戻る",
           ),
         ],
       ),
       body: Center(
         child: Container(
-          padding: EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextFormField(
-                  decoration: InputDecoration(labelText: "メールアドレス"),
+                  decoration: const InputDecoration(labelText: "メールアドレス"),
                   onChanged: (String value) {
                     setState(() {
                       email = value;
                     });
                   }),
               TextFormField(
-                decoration: InputDecoration(labelText: 'パスワード'),
+                decoration: const InputDecoration(labelText: 'パスワード'),
                 obscureText: true,
                 onChanged: (String value) {
                   setState(() {
@@ -83,7 +84,7 @@ class _SignUpState extends State<SignUpPage> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'パスワード確認'),
+                decoration: const InputDecoration(labelText: 'パスワード確認'),
                 obscureText: true,
                 onChanged: (String value) {
                   setState(() {
@@ -92,24 +93,24 @@ class _SignUpState extends State<SignUpPage> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: '名前'),
+                decoration: const InputDecoration(labelText: '名前'),
                 onChanged: (String value) {
                   setState(() {
                     userName = value;
                   });
                 },
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Column(children: [
                 ListTile(
                   onTap: () => _mealTimePicker("breakfastTime", _breakfastTime,
                       (newTime) {
                     _breakfastTime = newTime;
                   }),
-                  title: Text('朝食の時間を設定'),
-                  leading: Icon(Icons.watch),
+                  title: const Text('朝食の時間を設定'),
+                  leading: const Icon(Icons.watch),
                 ),
-                Divider()
+                const Divider()
               ]),
               Column(children: [
                 ListTile(
@@ -117,10 +118,10 @@ class _SignUpState extends State<SignUpPage> {
                       _mealTimePicker("lunchTime", _lunchTime, (newTime) {
                     _lunchTime = newTime;
                   }),
-                  title: Text('昼食の時間を設定'),
-                  leading: Icon(Icons.watch),
+                  title: const Text('昼食の時間を設定'),
+                  leading: const Icon(Icons.watch),
                 ),
-                Divider()
+                const Divider()
               ]),
               Column(children: [
                 ListTile(
@@ -128,21 +129,21 @@ class _SignUpState extends State<SignUpPage> {
                       _mealTimePicker("dinnerTime", _dinnerTime, (newTime) {
                     _dinnerTime = newTime;
                   }),
-                  title: Text('夜食の時間を設定'),
-                  leading: Icon(Icons.watch),
+                  title: const Text('夜食の時間を設定'),
+                  leading: const Icon(Icons.watch),
                 ),
-                Divider()
+                const Divider()
               ]),
               Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 // メッセージ表示
                 child: Text(infoText),
               ),
-              SizedBox(height: 8),
-              Container(
+              const SizedBox(height: 8),
+              SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
-                  child: Text("ユーザー登録"),
+                  child: const Text("ユーザー登録"),
                   onPressed: () async {
                     try {
                       if (password == passwordConfirmation) {
