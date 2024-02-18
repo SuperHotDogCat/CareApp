@@ -61,7 +61,9 @@ class SignUpState extends State<SignUpPage> {
           ),
         ],
       ),
-      body: Center(
+      body: 
+      SingleChildScrollView(
+        child: Center(
         child: Container(
           padding: const EdgeInsets.all(24),
           child: Column(
@@ -182,6 +184,7 @@ class SignUpState extends State<SignUpPage> {
           ),
         ),
       ),
+    ),
     );
   }
 }
