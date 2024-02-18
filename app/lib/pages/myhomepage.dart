@@ -17,21 +17,13 @@ class MyHomePage extends StatefulWidget {
   final User user;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState(user: user);
+  MyHomePageState createState() => MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  _MyHomePageState({required this.user});
-  User user;
+class MyHomePageState extends State<MyHomePage> {
 
   var pageIndex = 0;
   void _onTapBottomNavigationBar(int index) {
-    setState(() {
-      pageIndex = index; //page遷移, 選択時の色遷移をする。
-    });
-  }
-
-  void _onTapAppBar(int index) {
     setState(() {
       pageIndex = index; //page遷移, 選択時の色遷移をする。
     });
@@ -43,56 +35,56 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _pages = [
+    final pages = [
       CalendarPageBody(
         title: "Calender",
-        user: user,
+        user: widget.user,
       ),
       MedicinePageBody(
         title: "Medicine",
-        user: user,
+        user: widget.user,
       ),
       HomePageBody(
         title: "Settings",
-        user: user,
+        user: widget.user,
       ),
       SettingsPageBody(
         title: "Home",
-        user: user,
+        user: widget.user,
         scaffoldState: _scaffoldKey,
       )
     ];
 
     //To do: If our app has a page that does not need a drawer, please remove it.
-    final _drawers = [
+    final drawers = [
       CalendarPageDrawer(
-        user: user,
+        user: widget.user,
       ),
       MedicinePageDrawer(
-        user: user,
+        user: widget.user,
       ),
-      HomePageDrawer(),
+      const HomePageDrawer(),
       SettingsPageDrawer(
-        user: user,
+        user: widget.user,
       ),
     ];
 
-    final _leadings = [
+    final leadings = [
       IconButton(
-        icon: Icon(Icons.add),
+        icon: const Icon(Icons.add),
         onPressed: () {
           _scaffoldKey.currentState?.openDrawer();
         },
       ),
       IconButton(
-        icon: Icon(Icons.add),
+        icon: const Icon(Icons.add),
         onPressed: () {
           _scaffoldKey.currentState?.openDrawer();
         },
       ),
       Container(), //delete container
       IconButton(
-        icon: Icon(Icons.add),
+        icon: const Icon(Icons.add),
         onPressed: () {
           _scaffoldKey.currentState?.openDrawer();
         },
@@ -103,25 +95,25 @@ class _MyHomePageState extends State<MyHomePage> {
         key: _scaffoldKey,
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          leading: _leadings[pageIndex], // plusアイコンを使用
+          leading: leadings[pageIndex], // plusアイコンを使用
           title: Text(widget.title),
           actions: [
             IconButton(
               onPressed: () async {
                 await Navigator.of(context)
                     .pushReplacement(MaterialPageRoute(builder: (context) {
-                  return LogInPage();
+                  return const LogInPage();
                 }));
               },
-              icon: Icon(Icons.chevron_left),
+              icon: const Icon(Icons.chevron_left),
               tooltip: "ログイン画面に戻る",
             ),
           ],
         ),
-        body: _pages[pageIndex],
+        body: pages[pageIndex],
         // To do: floating buttonの追加, medicine pageでは恐らくflutter側からfirebaseを呼び出す処理が挟まれる。
         bottomNavigationBar: BottomNavigationBar(
-          items: [
+          items: const [
             BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_month), label: 'Calendar'),
             BottomNavigationBarItem(
@@ -136,6 +128,6 @@ class _MyHomePageState extends State<MyHomePage> {
           currentIndex: pageIndex, //これも設定しないとページ遷移時の色が変化しない。
           type: BottomNavigationBarType.fixed,
         ),
-        drawer: _drawers[pageIndex]);
+        drawer: drawers[pageIndex]);
   }
 }
