@@ -16,12 +16,14 @@ class MedicinePageState extends State<MedicinePageBody> {
   List<String> medicineList = [];
   List<String> imagesList = [];
   List<List<bool>> boolList = [];
+  List<List<int>> takenMedicineList = [];
   List<String> personList = [];
   //for carers
   List<String> carersMedicineList = [];
   List<String> carersImagesList = [];
   List<List<bool>> carersBoolList = [];
   List<String> carersPersonList = [];
+  List<List<int>> carersTakenMedicineList = [];
   String selfName = "";
 
   void _fetchData() async {
@@ -34,6 +36,7 @@ class MedicinePageState extends State<MedicinePageBody> {
       List<String> tmpMedicineList = [];
       List<String> tmpImagesList = [];
       List<List<bool>> tmpBoolList = [];
+      List<List<int>> tmpTakenMedicineList = [];
 
       for (var doc in snapshot.docs) {
         var data = doc.data();
@@ -42,6 +45,9 @@ class MedicinePageState extends State<MedicinePageBody> {
         List<bool> bools =
             data["medicineTime"].whereType<bool>().toList(); //こうキャストしなければいけない
         tmpBoolList.add(bools);
+        List<int> takenMedicines =
+            data["takenMedicine"].whereType<int>().toList();
+        tmpTakenMedicineList.add(takenMedicines);
       }
       setState(() {
         medicineList.clear();
@@ -50,6 +56,7 @@ class MedicinePageState extends State<MedicinePageBody> {
         medicineList.addAll(tmpMedicineList);
         imagesList.addAll(tmpImagesList);
         boolList.addAll(tmpBoolList);
+        takenMedicineList.addAll(tmpTakenMedicineList);
       });
 
       FirebaseFirestore.instance
@@ -102,6 +109,8 @@ class MedicinePageState extends State<MedicinePageBody> {
           List<String> tmpImagesList = [];
           List<List<bool>> tmpBoolList = [];
           List<String> tmpPersonList = [];
+          List<List<int>> tmpTakenMedicineList = [];
+
           for (var doc in snapshot.docs) {
             var data = doc.data();
             tmpMedicineList.add(data["medicine"]);
@@ -111,12 +120,16 @@ class MedicinePageState extends State<MedicinePageBody> {
                 .toList(); //こうキャストしなければいけない
             tmpBoolList.add(bools);
             tmpPersonList.add(tmpCarersNames[index]);
+            List<int> takenMedicines =
+                data["takenMedicine"].whereType<int>().toList();
+            tmpTakenMedicineList.add(takenMedicines);
           }
           setState(() {
             carersMedicineList.addAll(tmpMedicineList);
             carersImagesList.addAll(tmpImagesList);
             carersBoolList.addAll(tmpBoolList);
             carersPersonList.addAll(tmpPersonList);
+            carersTakenMedicineList.addAll(tmpTakenMedicineList);
           });
         });
       }
@@ -132,7 +145,8 @@ class MedicinePageState extends State<MedicinePageBody> {
         .delete();
   }
 
-  Widget _timeRow(List<bool> boolListContent, String userName) {
+  Widget _timeRow(
+      List<bool> boolListContent, String userName, List<int> takenMedicine) {
     List<Widget> widgets = [];
     widgets.add(Container(
       decoration: const BoxDecoration(
@@ -156,9 +170,9 @@ class MedicinePageState extends State<MedicinePageBody> {
             color: Colors.pink[200],
           ),
           padding: const EdgeInsets.all(4.0),
-          child: const Text(
-            'Morning',
-            style: TextStyle(fontSize: 14.0),
+          child: Text(
+            'Morning 個数 ${takenMedicine[0]}',
+            style: const TextStyle(fontSize: 14.0),
           ),
         ),
       );
@@ -174,9 +188,9 @@ class MedicinePageState extends State<MedicinePageBody> {
             color: Colors.yellow[200],
           ),
           padding: const EdgeInsets.all(4.0),
-          child: const Text(
-            'Lunch',
-            style: TextStyle(fontSize: 14.0),
+          child: Text(
+            'Lunch 個数 ${takenMedicine[1]}',
+            style: const TextStyle(fontSize: 14.0),
           ),
         ),
       );
@@ -192,9 +206,9 @@ class MedicinePageState extends State<MedicinePageBody> {
             color: Colors.blue[200],
           ),
           padding: const EdgeInsets.all(4.0),
-          child: const Text(
-            'Dinner',
-            style: TextStyle(fontSize: 14.0),
+          child: Text(
+            'Dinner 個数 ${takenMedicine[2]}',
+            style: const TextStyle(fontSize: 14.0),
           ),
         ),
       );
@@ -240,12 +254,12 @@ class MedicinePageState extends State<MedicinePageBody> {
               child: ListTile(
                 leading: medicineImageFromAsset(imagesList[index]),
                 title: Text(medicineList[index]),
-                subtitle: _timeRow(boolList[index], personList[index]),
+                subtitle: _timeRow(boolList[index], personList[index],
+                    takenMedicineList[index]),
                 trailing: IconButton(
                     icon: const Icon(Icons.close),
                     onPressed: () {
-                      _deleteMedicineData(
-                          widget.user.uid, medicineList[index]);
+                      _deleteMedicineData(widget.user.uid, medicineList[index]);
                     }),
                 onTap: () {
                   // 薬の編集画面
@@ -261,8 +275,10 @@ class MedicinePageState extends State<MedicinePageBody> {
               leading: medicineImageFromAsset(
                   carersImagesList[index - medicineList.length]),
               title: Text(carersMedicineList[index - medicineList.length]),
-              subtitle: _timeRow(carersBoolList[index - medicineList.length],
-                  carersPersonList[index - medicineList.length]),
+              subtitle: _timeRow(
+                  carersBoolList[index - medicineList.length],
+                  carersPersonList[index - medicineList.length],
+                  carersTakenMedicineList[index - medicineList.length]),
               trailing: IconButton(
                   icon: const Icon(Icons.close),
                   onPressed: () {
