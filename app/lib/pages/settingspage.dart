@@ -187,10 +187,11 @@ class SettingsPageState extends State<SettingsPageBody> {
               const SizedBox(
                 height: 16,
               ),
-              Text(
-                '自分の介護をしている人',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
+              if (careGivers.isNotEmpty)
+                Text(
+                  '自分の介護をしている人',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
               const SizedBox(
                 height: 16,
               ),
@@ -206,10 +207,11 @@ class SettingsPageState extends State<SettingsPageBody> {
                       );
                     }),
               ),
-              Text(
-                '自分が介護をしている人',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
+              if (carers.isNotEmpty)
+                Text(
+                  '自分が介護をしている人',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
               const SizedBox(
                 height: 16,
               ),
