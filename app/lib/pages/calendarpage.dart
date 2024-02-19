@@ -57,7 +57,8 @@ class CalendarPageState extends State<CalendarPageBody> {
         } else {
           fetchedEvents[dateKey]?.add([schedule]);
           fetchedTime[dateKey]?.add(date);
-          fetchedColorCodes[dateKey] = _addColorCodes(fetchedColorCodes[dateKey]!,color);
+          fetchedColorCodes[dateKey] =
+              _addColorCodes(fetchedColorCodes[dateKey]!, color);
         }
       }
 
@@ -69,10 +70,14 @@ class CalendarPageState extends State<CalendarPageBody> {
     });
   }
 
-  String _addColorCodes(String colorCodes, String addColor){
-    List<String> colorCandidates = ['0xFFF44336', '0xFFFF8A65', '0xFFCE93D8',]; //重要順
-    for (var i = 0; i < colorCandidates.length; ++i){
-      if (colorCodes == colorCandidates[i] || addColor == colorCandidates[i]){
+  String _addColorCodes(String colorCodes, String addColor) {
+    List<String> colorCandidates = [
+      '0xFFF44336',
+      '0xFFFF8A65',
+      '0xFFCE93D8',
+    ]; //重要順
+    for (var i = 0; i < colorCandidates.length; ++i) {
+      if (colorCodes == colorCandidates[i] || addColor == colorCandidates[i]) {
         return colorCandidates[i];
       }
     }
