@@ -13,8 +13,14 @@ class CalendarPageDrawer extends StatefulWidget {
 class CalendarPageDrawerState extends State<CalendarPageDrawer> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
+  int _selectedColorIndex = 0;
   final DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
   final TextEditingController _scheduleController = TextEditingController();
+  final List<String> colorCodes = [
+    '0xFFCE93D8',
+    '0xFFFF8A65',
+    '0xFFF44336'
+  ]; // 通常時, 少し重要, 超重要
 
   void _pickDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -57,7 +63,11 @@ class CalendarPageDrawerState extends State<CalendarPageDrawer> {
         .doc(widget.user.uid)
         .collection("schedule")
         .doc(finalDateTime.toString())
-        .set({"Date": finalDateTime, "schedule": scheduleText}).then((value) {
+        .set({
+      "Date": finalDateTime,
+      "schedule": scheduleText,
+      "color": colorCodes[_selectedColorIndex]
+    }).then((value) {
       // 保存後、入力フィールドをクリアする
       try {
         _scheduleController.clear();
@@ -106,6 +116,49 @@ class CalendarPageDrawerState extends State<CalendarPageDrawer> {
                 labelText: '予定の内容',
               ),
             ),
+          ),
+          const ListTile(
+            title: Text('予定の重要度'),
+          ),
+          // 色選択のためのRadioListTileを追加
+          RadioListTile<int>(
+            title: Text(
+              '普通',
+              style: TextStyle(color: Color(int.parse(colorCodes[0]))),
+            ),
+            value: 0,
+            groupValue: _selectedColorIndex,
+            onChanged: (int? value) {
+              setState(() {
+                _selectedColorIndex = value!;
+              });
+            },
+          ),
+          RadioListTile<int>(
+            title: Text(
+              'やや重要',
+              style: TextStyle(color: Color(int.parse(colorCodes[1]))),
+            ),
+            value: 1,
+            groupValue: _selectedColorIndex,
+            onChanged: (int? value) {
+              setState(() {
+                _selectedColorIndex = value!;
+              });
+            },
+          ),
+          RadioListTile<int>(
+            title: Text(
+              '超重要',
+              style: TextStyle(color: Color(int.parse(colorCodes[2]))),
+            ),
+            value: 2,
+            groupValue: _selectedColorIndex,
+            onChanged: (int? value) {
+              setState(() {
+                _selectedColorIndex = value!;
+              });
+            },
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
