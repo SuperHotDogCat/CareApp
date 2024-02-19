@@ -127,6 +127,8 @@ class MedicineTimeSettingDialogState extends State<MedicineTimeSettingDialog> {
   bool isMorningSelected = false;
   bool isNoonSelected = false;
   bool isNightSelected = false;
+  final List<int> _takenMedicineCandidates = [1, 2, 3, 4, 5];
+  final List<int> _takenMedicines = [1, 1, 1];
 
   void _addData(String medicineName) {
     CollectionReference collection = FirebaseFirestore.instance
@@ -136,7 +138,8 @@ class MedicineTimeSettingDialogState extends State<MedicineTimeSettingDialog> {
     collection.doc(medicineName).set({
       "medicine": medicineName,
       "imgPath": widget.saveName,
-      "medicineTime": [isMorningSelected, isNoonSelected, isNightSelected]
+      "medicineTime": [isMorningSelected, isNoonSelected, isNightSelected],
+      "takenMedicine": _takenMedicines
     }, SetOptions(merge: true));
   }
 
@@ -147,50 +150,116 @@ class MedicineTimeSettingDialogState extends State<MedicineTimeSettingDialog> {
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
-            SwitchListTile(
-              title: const Row(
-                children: [
-                  Icon(Icons.wb_sunny),
-                  SizedBox(width: 8),
-                  Text("朝"),
-                ],
-              ),
-              value: isMorningSelected,
-              onChanged: (value) {
-                setState(() {
-                  isMorningSelected = value;
-                });
-              },
+            Row(
+              children: [
+                Expanded(
+                  child: SwitchListTile(
+                      value: isMorningSelected,
+                      onChanged: (value) {
+                        setState(() {
+                          isMorningSelected = value;
+                        });
+                      },
+                      title: const Row(
+                        children: [
+                          Icon(Icons.wb_sunny),
+                          SizedBox(width: 8),
+                          Text("朝"),
+                        ],
+                      )),
+                ),
+                if (isMorningSelected)
+                  DropdownButton<int>(
+                    value: _takenMedicines[0],
+                    hint: const Text('Select'),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _takenMedicines[0] = newValue!;
+                      });
+                    },
+                    items: _takenMedicineCandidates
+                        .map<DropdownMenuItem<int>>((int value) {
+                      return DropdownMenuItem<int>(
+                        value: value,
+                        child: Text('$value'),
+                      );
+                    }).toList(),
+                  ),
+              ],
             ),
-            SwitchListTile(
-              title: const Row(
-                children: [
-                  Icon(Icons.wb_cloudy),
-                  SizedBox(width: 8),
-                  Text("昼"),
-                ],
-              ),
-              value: isNoonSelected,
-              onChanged: (value) {
-                setState(() {
-                  isNoonSelected = value;
-                });
-              },
+            Row(
+              children: [
+                Expanded(
+                  child: SwitchListTile(
+                      value: isNoonSelected,
+                      onChanged: (value) {
+                        setState(() {
+                          isNoonSelected = value;
+                        });
+                      },
+                      title: const Row(
+                        children: [
+                          Icon(Icons.wb_cloudy),
+                          SizedBox(width: 8),
+                          Text("昼"),
+                        ],
+                      )),
+                ),
+                if (isNoonSelected)
+                  DropdownButton<int>(
+                    value: _takenMedicines[1],
+                    hint: const Text('Select'),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _takenMedicines[1] = newValue!;
+                      });
+                    },
+                    items: _takenMedicineCandidates
+                        .map<DropdownMenuItem<int>>((int value) {
+                      return DropdownMenuItem<int>(
+                        value: value,
+                        child: Text('$value'),
+                      );
+                    }).toList(),
+                  ),
+              ],
             ),
-            SwitchListTile(
-              title: const Row(
-                children: [
-                  Icon(Icons.nights_stay),
-                  SizedBox(width: 8),
-                  Text("夜"),
-                ],
-              ),
-              value: isNightSelected,
-              onChanged: (value) {
-                setState(() {
-                  isNightSelected = value;
-                });
-              },
+            Row(
+              children: [
+                Expanded(
+                  child: SwitchListTile(
+                      value: isNightSelected,
+                      onChanged: (value) {
+                        setState(() {
+                          isNightSelected = value;
+                        });
+                      },
+                      title: const Row(
+                        children: [
+                          Icon(Icons.nights_stay),
+                          SizedBox(width: 8),
+                          Text("夜"),
+                        ],
+                      )),
+                ),
+                if (isNightSelected)
+                  DropdownButton<int>(
+                    value: _takenMedicines[2],
+                    hint: const Text('Select'),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _takenMedicines[2] = newValue!;
+                      });
+                    },
+                    items: _takenMedicineCandidates
+                        .map<DropdownMenuItem<int>>((int value) {
+                      return DropdownMenuItem<int>(
+                        value: value,
+                        child: Text('$value'),
+                      );
+                    }).toList(),
+                  ),
+              ],
             ),
           ],
         ),
