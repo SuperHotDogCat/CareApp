@@ -17,6 +17,7 @@ class CalendarPageState extends State<CalendarPageBody> {
 
   Map<DateTime, List<dynamic>> _events = {};
   Map<DateTime, List<DateTime>> _detailedTime = {};
+  Map<DateTime, String> _colorCodes = {};
   List<dynamic> _selectedEvents = [];
   List<DateTime> _selectedDetailedTime = [];
 
@@ -25,8 +26,7 @@ class CalendarPageState extends State<CalendarPageBody> {
     super.initState();
     _fetchEvents();
     _selectedEvents =
-        _events[DateTime(_selected.year, _selected.month, _selected.day)] ??
-            [];
+        _events[DateTime(_selected.year, _selected.month, _selected.day)] ?? [];
     _selectedDetailedTime = _detailedTime[
             DateTime(_selected.year, _selected.month, _selected.day)] ??
         [];
@@ -41,27 +41,42 @@ class CalendarPageState extends State<CalendarPageBody> {
         .listen((snapshot) {
       final Map<DateTime, List<dynamic>> fetchedEvents = {};
       final Map<DateTime, List<DateTime>> fetchedTime = {};
+      final Map<DateTime, String> fetchedColorCodes = {};
       for (var doc in snapshot.docs) {
         var data = doc.data();
         final date = data["Date"]
             .toDate(); //For now, this app can only be used in Japan.
         final schedule = data["schedule"];
+        final String color = data["color"] ?? '0xFFCE93D8';
         final dateKey =
             DateTime(date.year, date.month, date.day); //To show the calendar
         if (fetchedEvents[dateKey] == null) {
           fetchedEvents[dateKey] = [schedule];
           fetchedTime[dateKey] = [date];
+          fetchedColorCodes[dateKey] = color;
         } else {
-          fetchedEvents[dateKey]?.add(schedule);
+          fetchedEvents[dateKey]?.add([schedule]);
           fetchedTime[dateKey]?.add(date);
+          fetchedColorCodes[dateKey] = _addColorCodes(fetchedColorCodes[dateKey]!,color);
         }
       }
 
       setState(() {
         _events = fetchedEvents;
         _detailedTime = fetchedTime;
+        _colorCodes = fetchedColorCodes;
       });
     });
+  }
+
+  String _addColorCodes(String colorCodes, String addColor){
+    List<String> colorCandidates = ['0xFFF44336', '0xFFFF8A65', '0xFFCE93D8',]; //重要順
+    for (var i = 0; i < colorCandidates.length; ++i){
+      if (colorCodes == colorCandidates[i] || addColor == colorCandidates[i]){
+        return colorCandidates[i];
+      }
+    }
+    return '0xFFCE93D8';
   }
 
   @override
@@ -102,7 +117,7 @@ class CalendarPageState extends State<CalendarPageBody> {
                   child: Container(
                     margin: const EdgeInsets.all(4.0),
                     decoration: BoxDecoration(
-                      color: Colors.blue[300],
+                      color: Color(int.parse(_colorCodes[datelocal]!)),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     width: 100,
