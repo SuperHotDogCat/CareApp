@@ -1,12 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomePageDrawer extends StatefulWidget {
-  const HomePageDrawer({super.key});
+  const HomePageDrawer({super.key, required this.user});
+  final User user;
   @override
   HomePageDrawerState createState() => HomePageDrawerState();
 }
 
 class HomePageDrawerState extends State<HomePageDrawer> {
+  final TextEditingController _everyDayTaskController = TextEditingController();
   @override
   Widget build(context) {
     return Drawer(
@@ -17,24 +21,40 @@ class HomePageDrawerState extends State<HomePageDrawer> {
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.inversePrimary,
             ),
-            child: const Text('Home Drawer Header'),
+            child: const Text('日常的なタスクを追加'),
           ),
           ListTile(
-            title: const Text('項目 1'),
-            onTap: () {
-              // Drawer内の項目がタップされたときの動作
-              Navigator.pop(context); // Drawerを閉じる
-            },
+            title: TextField(
+              controller: _everyDayTaskController,
+              decoration: const InputDecoration(
+                labelText: '日常的にやらなければならないこと',
+              ),
+            ),
           ),
-          ListTile(
-            title: const Text('項目 2'),
-            onTap: () {
-              // Drawer内の項目がタップされたときの動作
-              Navigator.pop(context); // Drawerを閉じる
-            },
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              onPressed: _addEveryDayTask,
+              child: const Text('追加'),
+            ),
           ),
         ],
       ),
     );
+  }
+
+  void _addEveryDayTask() {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.user.uid)
+        .collection('everydaytask')
+        .doc(_everyDayTaskController.text)
+        .set({"task": _everyDayTaskController.text},
+            SetOptions(merge: true)).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('日常的なタスクを登録しました')),
+      );
+      Navigator.pop(context);
+    });
   }
 }

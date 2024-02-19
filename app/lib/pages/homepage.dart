@@ -13,7 +13,14 @@ class HomePageBody extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePageBody> {
-  // 薬リストのデータ
+  List<String> everyDayTask = [];
+  List<bool> everyDayTaskAchieved = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchEveryDayTask();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,28 +30,109 @@ class HomePageState extends State<HomePageBody> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // StreamBuilderを含むコード...
             StreamBuilder<DocumentSnapshot>(
               stream: fetchUserDataSnapShots(widget.user),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
+                  return const Center(child: CircularProgressIndicator());
                 }
                 // ドキュメントからデータを取得
                 Map<String, dynamic> userData =
-                    snapshot.data!.data() as Map<String, dynamic>;
+                    snapshot.data?.data() as Map<String, dynamic>? ?? {};
                 String name = userData['name'] ?? ''; // nameがnullの場合は空文字を表示
                 String id = userData['id'] ?? ''; // idがnullの場合は空文字を表示
-                return Column(
-                  children: [
-                    Row(children: [const Text("Name: "), Text(name)]),
-                    Row(children: [const Text("Id: "), Text(id)]),
-                  ],
+                return Card(
+                  elevation: 4, // カードの影
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // 角の丸み
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Name: ",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              name,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10), // 少し間隔を空ける
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "ID: ",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              id,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               },
+            ),
+            // Checkboxを追加
+            const SizedBox(height: 20),
+            if (everyDayTask.isNotEmpty)
+              const Text(
+                'Everyday Tasks',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            Column(
+              children: List.generate(everyDayTask.length, (index) {
+                return ListTile(
+                  leading: Checkbox(
+                    value: everyDayTaskAchieved[index], // 動的な値
+                    onChanged: (bool? value) {
+                      setState(() {
+                        everyDayTaskAchieved[index] = value ?? false;
+                      });
+                    },
+                  ),
+                  title: Text(everyDayTask[index]),
+                );
+              }),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _fetchEveryDayTask() {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.user.uid)
+        .collection('everydaytask')
+        .snapshots()
+        .listen((snapshot) {
+      List<String> tmpEveryDayTask = [];
+      List<bool> tmpEveryDayTaskAchieved = [];
+
+      for (var doc in snapshot.docs) {
+        var data = doc.data();
+        tmpEveryDayTask.add(data['task']);
+        tmpEveryDayTaskAchieved.add(false);
+      }
+      setState(() {
+        everyDayTask = tmpEveryDayTask;
+        everyDayTaskAchieved = tmpEveryDayTaskAchieved;
+      });
+    });
   }
 }

@@ -62,7 +62,7 @@ class MyHomePageState extends State<MyHomePage> {
       MedicinePageDrawer(
         user: widget.user,
       ),
-      const HomePageDrawer(),
+      HomePageDrawer(user: widget.user),
       SettingsPageDrawer(
         user: widget.user,
       ),
@@ -81,7 +81,12 @@ class MyHomePageState extends State<MyHomePage> {
           _scaffoldKey.currentState?.openDrawer();
         },
       ),
-      Container(), //delete container
+      IconButton(
+        icon: const Icon(Icons.add),
+        onPressed: () {
+          _scaffoldKey.currentState?.openDrawer();
+        },
+      ),
       IconButton(
         icon: const Icon(Icons.add),
         onPressed: () {
