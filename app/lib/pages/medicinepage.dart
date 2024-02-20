@@ -18,12 +18,12 @@ class MedicinePageState extends State<MedicinePageBody> {
   List<List<bool>> boolList = [];
   List<List<int>> takenMedicineList = [];
   List<String> personList = [];
-  //for carers
-  List<String> carersMedicineList = [];
-  List<String> carersImagesList = [];
-  List<List<bool>> carersBoolList = [];
-  List<String> carersPersonList = [];
-  List<List<int>> carersTakenMedicineList = [];
+  //for careRecipients
+  List<String> careRecipientsMedicineList = [];
+  List<String> careRecipientsImagesList = [];
+  List<List<bool>> careRecipientsBoolList = [];
+  List<String> careRecipientsPersonList = [];
+  List<List<int>> careRecipientsTakenMedicineList = [];
   String selfName = "";
 
   void _fetchData() async {
@@ -81,27 +81,27 @@ class MedicinePageState extends State<MedicinePageBody> {
     });
   }
 
-  void _fetchCarersData() async {
+  void _fetchCareRecipientsData() async {
     //To do: Careしている人のデータも取る
-    //Map<String, String> tmpCarersNames = {};
-    List<String> tmpCarersNames = [];
-    List<String> tmpCarersIds = [];
+    //Map<String, String> tmpCareRecipientsNames = {};
+    List<String> tmpCareRecipientsNames = [];
+    List<String> tmpCareRecipientsIds = [];
     FirebaseFirestore.instance
         .collection('users')
         .doc(widget.user.uid)
-        .collection('carers')
+        .collection('carerecipients')
         .snapshots()
         .listen((snapshot) {
       for (var doc in snapshot.docs) {
         var data = doc.data();
-        tmpCarersNames.add(data["name"]);
-        tmpCarersIds.add(data["id"]);
+        tmpCareRecipientsNames.add(data["name"]);
+        tmpCareRecipientsIds.add(data["id"]);
       }
-      //iteration per carers
-      for (var index = 0; index < tmpCarersNames.length; ++index) {
+      //iteration per careRecipients
+      for (var index = 0; index < tmpCareRecipientsNames.length; ++index) {
         FirebaseFirestore.instance
             .collection('users')
-            .doc(tmpCarersIds[index])
+            .doc(tmpCareRecipientsIds[index])
             .collection('medicine')
             .snapshots()
             .listen((snapshot) {
@@ -119,17 +119,17 @@ class MedicinePageState extends State<MedicinePageBody> {
                 .whereType<bool>()
                 .toList(); //こうキャストしなければいけない
             tmpBoolList.add(bools);
-            tmpPersonList.add(tmpCarersNames[index]);
+            tmpPersonList.add(tmpCareRecipientsNames[index]);
             List<int> takenMedicines =
                 data["takenMedicine"].whereType<int>().toList();
             tmpTakenMedicineList.add(takenMedicines);
           }
           setState(() {
-            carersMedicineList.addAll(tmpMedicineList);
-            carersImagesList.addAll(tmpImagesList);
-            carersBoolList.addAll(tmpBoolList);
-            carersPersonList.addAll(tmpPersonList);
-            carersTakenMedicineList.addAll(tmpTakenMedicineList);
+            careRecipientsMedicineList.addAll(tmpMedicineList);
+            careRecipientsImagesList.addAll(tmpImagesList);
+            careRecipientsBoolList.addAll(tmpBoolList);
+            careRecipientsPersonList.addAll(tmpPersonList);
+            careRecipientsTakenMedicineList.addAll(tmpTakenMedicineList);
           });
         });
       }
@@ -239,14 +239,14 @@ class MedicinePageState extends State<MedicinePageBody> {
   void initState() {
     super.initState();
     _fetchData();
-    _fetchCarersData();
+    _fetchCareRecipientsData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
         child: ListView.builder(
-      itemCount: medicineList.length + carersMedicineList.length,
+      itemCount: medicineList.length + careRecipientsMedicineList.length,
       itemBuilder: (context, index) {
         if (index < medicineList.length) {
           try {
@@ -273,12 +273,13 @@ class MedicinePageState extends State<MedicinePageBody> {
           return Card(
             child: ListTile(
               leading: medicineImageFromAsset(
-                  carersImagesList[index - medicineList.length]),
-              title: Text(carersMedicineList[index - medicineList.length]),
+                  careRecipientsImagesList[index - medicineList.length]),
+              title:
+                  Text(careRecipientsMedicineList[index - medicineList.length]),
               subtitle: _timeRow(
-                  carersBoolList[index - medicineList.length],
-                  carersPersonList[index - medicineList.length],
-                  carersTakenMedicineList[index - medicineList.length]),
+                  careRecipientsBoolList[index - medicineList.length],
+                  careRecipientsPersonList[index - medicineList.length],
+                  careRecipientsTakenMedicineList[index - medicineList.length]),
               trailing: IconButton(
                   icon: const Icon(Icons.close),
                   onPressed: () {

@@ -51,7 +51,7 @@ class SettingsPageState extends State<SettingsPageBody> {
   }
 
   List<String> careGivers = [];
-  List<String> carers = [];
+  List<String> careRecipients = [];
 
   Map<String, DateTime> _mealTime = {
     "breakfast": DateTime.now(),
@@ -98,19 +98,19 @@ class SettingsPageState extends State<SettingsPageBody> {
     });
   }
 
-  void _fetchCarers() async {
+  void _fetchCareRecipients() async {
     FirebaseFirestore.instance
         .collection('users')
         .doc(widget.user.uid)
-        .collection('carers')
+        .collection('carerecipients')
         .snapshots()
         .listen((snapshot) {
-      List<String> tmpCarers = [];
+      List<String> tmpCareRecipients = [];
       for (var doc in snapshot.docs) {
-        tmpCarers.add(doc["name"]);
+        tmpCareRecipients.add(doc["name"]);
       }
       setState(() {
-        carers = tmpCarers;
+        careRecipients = tmpCareRecipients;
       });
     });
   }
@@ -132,7 +132,7 @@ class SettingsPageState extends State<SettingsPageBody> {
     super.initState();
     _fetchMealTime();
     _fetchCaregivers();
-    _fetchCarers();
+    _fetchCareRecipients();
   }
 
   @override
@@ -207,7 +207,7 @@ class SettingsPageState extends State<SettingsPageBody> {
                       );
                     }),
               ),
-              if (carers.isNotEmpty)
+              if (careRecipients.isNotEmpty)
                 Text(
                   '自分が介護をしている人',
                   style: Theme.of(context).textTheme.headlineMedium,
@@ -216,13 +216,13 @@ class SettingsPageState extends State<SettingsPageBody> {
                 height: 16,
               ),
               SizedBox(
-                height: min(carers.length * 50, 200),
+                height: min(careRecipients.length * 50, 200),
                 child: ListView.builder(
-                    itemCount: carers.length,
+                    itemCount: careRecipients.length,
                     itemBuilder: (context, index) {
                       return Card(
                         child: ListTile(
-                          title: Text(carers[index]),
+                          title: Text(careRecipients[index]),
                         ),
                       );
                     }),

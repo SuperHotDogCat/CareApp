@@ -52,12 +52,12 @@ class SettingsPageDrawerState extends State<SettingsPageDrawer> {
             .collection('caregivers')
             .doc(addCareGiverId)
             .set({"id": data["id"], "name": data["name"]});
-        //add carers
-        CollectionReference carers = await FirebaseFirestore.instance
+        //add careRecipients
+        CollectionReference careRecipients = await FirebaseFirestore.instance
             .collection('users')
             .doc(data["id"])
-            .collection("carers");
-        carers
+            .collection("carerecipients");
+        careRecipients
             .doc(widget.user.uid)
             .set({"id": widget.user.uid, "name": selfName});
         ScaffoldMessenger.of(context).showSnackBar(
