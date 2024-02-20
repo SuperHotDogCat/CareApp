@@ -20,7 +20,7 @@ class LogInPageState extends State<LogInPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Log in"),
+        title: const Text("ログイン"),
       ),
       body: Center(
         child: Container(
@@ -70,7 +70,7 @@ class LogInPageState extends State<LogInPage> {
                                 await Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(builder: (context) {
                                   return MyHomePage(
-                                      title: "CareApp", user: result.user!);
+                                      title: "CareLink", user: result.user!);
                                 }));
                               } catch (e) {
                                 setState(() {
@@ -88,7 +88,7 @@ class LogInPageState extends State<LogInPage> {
                       onPressed: () async {
                         await Navigator.of(context).pushReplacement(
                             MaterialPageRoute(builder: (context) {
-                          return SignUpPage();
+                          return const SignUpPage();
                         }));
                       }),
                 ),

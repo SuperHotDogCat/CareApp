@@ -21,19 +21,19 @@ class SettingsPageState extends State<SettingsPageBody> {
   final remindDropDownItems = const [
     DropdownMenuItem(
       value: 15,
-      child: Text("15 min"),
+      child: Text("15 分"),
     ),
     DropdownMenuItem(
       value: 30,
-      child: Text("30 min"),
+      child: Text("30 分"),
     ),
     DropdownMenuItem(
       value: 45,
-      child: Text("45 min"),
+      child: Text("45 分"),
     ),
     DropdownMenuItem(
       value: 60,
-      child: Text("60 min"),
+      child: Text("60 分"),
     ),
   ];
 
@@ -232,7 +232,7 @@ class SettingsPageState extends State<SettingsPageBody> {
               ),
               ElevatedButton(
                 onPressed: _openDrawer,
-                child: const Text('共同介護者を追加'),
+                child: const Text('介護者を追加'),
               ),
             ],
           ),

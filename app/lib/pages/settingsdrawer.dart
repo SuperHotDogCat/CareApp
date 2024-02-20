@@ -135,7 +135,7 @@ class SettingsPageDrawerState extends State<SettingsPageDrawer> {
                 _showTimePicker("dinnerTime", _dinnerTime, (newTime) {
               _dinnerTime = newTime;
             }),
-            child: const Text('夜食の時間を設定'),
+            child: const Text('夕食の時間を設定'),
           ),
           const SizedBox(height: 20),
           ListTile(

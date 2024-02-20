@@ -36,19 +36,19 @@ class MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final pages = [
       CalendarPageBody(
-        title: "Calender",
+        title: "カレンダー",
         user: widget.user,
       ),
       MedicinePageBody(
-        title: "Medicine",
+        title: "薬",
         user: widget.user,
       ),
       HomePageBody(
-        title: "Settings",
+        title: "設定",
         user: widget.user,
       ),
       SettingsPageBody(
-        title: "Home",
+        title: "ホーム",
         user: widget.user,
         scaffoldState: _scaffoldKey,
       )
@@ -119,12 +119,11 @@ class MyHomePageState extends State<MyHomePage> {
         bottomNavigationBar: BottomNavigationBar(
           items: const [
             BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_month), label: 'Calendar'),
+                icon: Icon(Icons.calendar_month), label: 'カレンダー'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.medical_services), label: 'Medicine'),
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: 'Settings'),
+                icon: Icon(Icons.medical_services), label: '薬'),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'ホーム'),
+            BottomNavigationBarItem(icon: Icon(Icons.settings), label: '設定'),
             //BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
           ],
           onTap: _onTapBottomNavigationBar,

@@ -32,7 +32,8 @@ class HomePageState extends State<HomePageBody> {
           children: [
             // StreamBuilderを含むコード...
             StreamBuilder<DocumentSnapshot>(
-              stream: fetchUserDataSnapShots(widget.user),
+              stream: fetchUserDataSnapShots(
+                  widget.user), // この関数はユーザーのデータをフェッチします（仮の関数）
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -51,34 +52,40 @@ class HomePageState extends State<HomePageBody> {
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              "Name: ",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              name,
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                          ],
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "名前 ",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                name,
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 10), // 少し間隔を空ける
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              "ID: ",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              id,
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                          ],
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "ID: ",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                id,
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -90,7 +97,7 @@ class HomePageState extends State<HomePageBody> {
             const SizedBox(height: 20),
             if (everyDayTask.isNotEmpty)
               const Text(
-                'Everyday Tasks',
+                '日常のタスク',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             Column(
@@ -105,6 +112,10 @@ class HomePageState extends State<HomePageBody> {
                     },
                   ),
                   title: Text(everyDayTask[index]),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {},
+                  ),
                 );
               }),
             ),

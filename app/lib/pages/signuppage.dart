@@ -47,7 +47,7 @@ class SignUpState extends State<SignUpPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Sign Up"),
+        title: const Text("ユーザー登録"),
         actions: [
           IconButton(
             onPressed: () async {

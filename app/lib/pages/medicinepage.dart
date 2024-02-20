@@ -171,7 +171,7 @@ class MedicinePageState extends State<MedicinePageBody> {
           ),
           padding: const EdgeInsets.all(4.0),
           child: Text(
-            'Morning 個数 ${takenMedicine[0]}',
+            '朝 個数 ${takenMedicine[0]}',
             style: const TextStyle(fontSize: 14.0),
           ),
         ),
@@ -189,7 +189,7 @@ class MedicinePageState extends State<MedicinePageBody> {
           ),
           padding: const EdgeInsets.all(4.0),
           child: Text(
-            'Lunch 個数 ${takenMedicine[1]}',
+            '昼 個数 ${takenMedicine[1]}',
             style: const TextStyle(fontSize: 14.0),
           ),
         ),
@@ -207,7 +207,7 @@ class MedicinePageState extends State<MedicinePageBody> {
           ),
           padding: const EdgeInsets.all(4.0),
           child: Text(
-            'Dinner 個数 ${takenMedicine[2]}',
+            '夜 個数 ${takenMedicine[2]}',
             style: const TextStyle(fontSize: 14.0),
           ),
         ),
@@ -267,7 +267,7 @@ class MedicinePageState extends State<MedicinePageBody> {
               ),
             );
           } catch (e) {
-            return const Text('...Loading');
+            return const Text('...読み込み中');
           }
         } else {
           return Card(

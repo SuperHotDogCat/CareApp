@@ -27,7 +27,7 @@ class HomePageDrawerState extends State<HomePageDrawer> {
             title: TextField(
               controller: _everyDayTaskController,
               decoration: const InputDecoration(
-                labelText: '日常的にやらなければならないこと',
+                labelText: '日常的なタスクの追加',
               ),
             ),
           ),
