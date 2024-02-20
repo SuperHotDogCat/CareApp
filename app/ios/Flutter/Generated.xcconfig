@@ -1,8 +1,8 @@
 // This is a generated file; do not edit or check into version control.
-FLUTTER_ROOT=/Users/takahashijunichirou/flutter
-FLUTTER_APPLICATION_PATH=/Users/takahashijunichirou/Desktop/GDSC/SolutionChallenge/CareApp/app
+FLUTTER_ROOT=/Users/keidai/Development/flutter
+FLUTTER_APPLICATION_PATH=/Users/keidai/Desktop/EEIC/gdsc/SolutionChallenge/CareApp/app
 COCOAPODS_PARALLEL_CODE_SIGN=true
-FLUTTER_TARGET=/Users/takahashijunichirou/Desktop/GDSC/SolutionChallenge/CareApp/app/lib/main.dart
+FLUTTER_TARGET=/Users/keidai/Desktop/EEIC/gdsc/SolutionChallenge/CareApp/app/lib/main.dart
 FLUTTER_BUILD_DIR=build
 FLUTTER_BUILD_NAME=1.0.0
 FLUTTER_BUILD_NUMBER=1
@@ -12,4 +12,4 @@ DART_DEFINES=RkxVVFRFUl9XRUJfQVVUT19ERVRFQ1Q9dHJ1ZQ==,RkxVVFRFUl9XRUJfQ0FOVkFTS0
 DART_OBFUSCATION=false
 TRACK_WIDGET_CREATION=true
 TREE_SHAKE_ICONS=false
-PACKAGE_CONFIG=/Users/takahashijunichirou/Desktop/GDSC/SolutionChallenge/CareApp/app/.dart_tool/package_config.json
+PACKAGE_CONFIG=/Users/keidai/Desktop/EEIC/gdsc/SolutionChallenge/CareApp/app/.dart_tool/package_config.json
