@@ -41,5 +41,18 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/local.properties
+
+# iOS
+/ios/.symlinks/plugins/*
+/ios/Flutter/Generated.xcconfig
+/ios/Flutter/flutter_export_environment.sh
+
+#macos
+/macos/Flutter/ephemeral/Flutter-Generated.xcconfig
+/macos/Flutter/ephemeral/flutter_export_environment.sh
+
+#windows
+/windows/flutter/ephemeral/.plugins_symlinks/*
 
 GoogleService-Info.plist
