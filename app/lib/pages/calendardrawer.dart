@@ -4,21 +4,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart'; //DateFormat
 
 class CalendarPageDrawer extends StatefulWidget {
-  CalendarPageDrawer({super.key, required this.user});
+  const CalendarPageDrawer({super.key, required this.user});
   final User user;
   @override
-  _CalendarPageDrawerState createState() =>
-      _CalendarPageDrawerState(user: user);
+  CalendarPageDrawerState createState() => CalendarPageDrawerState();
 }
 
-class _CalendarPageDrawerState extends State<CalendarPageDrawer> {
-  _CalendarPageDrawerState({required this.user});
-  final User user;
+class CalendarPageDrawerState extends State<CalendarPageDrawer> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
+  int _selectedColorIndex = 0;
   final DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
-  final DateFormat _timeFormat = DateFormat('HH:mm:ss');
-  TextEditingController _scheduleController = TextEditingController();
+  final TextEditingController _scheduleController = TextEditingController();
+  final List<String> colorCodes = [
+    '0xFFCE93D8',
+    '0xFFFF8A65',
+    '0xFFF44336'
+  ]; // 通常時, 少し重要, 超重要
 
   void _pickDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -56,28 +58,30 @@ class _CalendarPageDrawerState extends State<CalendarPageDrawer> {
     );
     String scheduleText = _scheduleController.text;
     // Firebase Firestoreにデータを保存する処理
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .collection("schedule")
-          .doc(finalDateTime.toString())
-          .set({"Date": finalDateTime, "schedule": scheduleText});
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.user.uid)
+        .collection("schedule")
+        .doc(finalDateTime.toString())
+        .set({
+      "Date": finalDateTime,
+      "schedule": scheduleText,
+      "color": colorCodes[_selectedColorIndex]
+    }).then((value) {
       // 保存後、入力フィールドをクリアする
-      _scheduleController.clear();
-      // 日付と時刻の選択肢をリセットするなどの処理を追加
-
-      // ユーザーに保存が完了したことを通知する
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('予定を保存しました')),
-      );
-      //pop
-      Navigator.pop(context);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('予定の追加に失敗しました')),
-      );
-    }
+      try {
+        _scheduleController.clear();
+        // ユーザーに保存が完了したことを通知する
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('予定を保存しました')),
+        );
+        Navigator.pop(context);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('予定の追加に失敗しました')),
+        );
+      }
+    });
   }
 
   @override
@@ -87,14 +91,14 @@ class _CalendarPageDrawerState extends State<CalendarPageDrawer> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Text(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.inversePrimary,
+            ),
+            child: const Text(
               '予定を追加',
               style: TextStyle(
                 fontSize: 24,
               ),
-            ),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.inversePrimary,
             ),
           ),
           ListTile(
@@ -108,16 +112,59 @@ class _CalendarPageDrawerState extends State<CalendarPageDrawer> {
           ListTile(
             title: TextField(
               controller: _scheduleController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: '予定の内容',
               ),
             ),
           ),
+          const ListTile(
+            title: Text('予定の重要度'),
+          ),
+          // 色選択のためのRadioListTileを追加
+          RadioListTile<int>(
+            title: Text(
+              '普通',
+              style: TextStyle(color: Color(int.parse(colorCodes[0]))),
+            ),
+            value: 0,
+            groupValue: _selectedColorIndex,
+            onChanged: (int? value) {
+              setState(() {
+                _selectedColorIndex = value!;
+              });
+            },
+          ),
+          RadioListTile<int>(
+            title: Text(
+              'やや重要',
+              style: TextStyle(color: Color(int.parse(colorCodes[1]))),
+            ),
+            value: 1,
+            groupValue: _selectedColorIndex,
+            onChanged: (int? value) {
+              setState(() {
+                _selectedColorIndex = value!;
+              });
+            },
+          ),
+          RadioListTile<int>(
+            title: Text(
+              '超重要',
+              style: TextStyle(color: Color(int.parse(colorCodes[2]))),
+            ),
+            value: 2,
+            groupValue: _selectedColorIndex,
+            onChanged: (int? value) {
+              setState(() {
+                _selectedColorIndex = value!;
+              });
+            },
+          ),
           Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               onPressed: _saveData,
-              child: Text('保存'),
+              child: const Text('保存'),
             ),
           ),
         ],

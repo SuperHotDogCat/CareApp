@@ -6,14 +6,11 @@ class SettingsPageDrawer extends StatefulWidget {
   SettingsPageDrawer({super.key, required this.user});
   final User user;
   @override
-  _SettingsPageDrawerState createState() =>
-      _SettingsPageDrawerState(user: user);
+  SettingsPageDrawerState createState() => SettingsPageDrawerState();
 }
 
-class _SettingsPageDrawerState extends State<SettingsPageDrawer> {
-  _SettingsPageDrawerState({required this.user});
-  final User user;
-  TextEditingController _caregiverController = TextEditingController();
+class SettingsPageDrawerState extends State<SettingsPageDrawer> {
+  final TextEditingController _caregiverController = TextEditingController();
 
   // DateTime型で変数を初期化、ローカルタイムで朝8時に設定
   DateTime _breakfastTime = DateTime(
@@ -29,12 +26,13 @@ class _SettingsPageDrawerState extends State<SettingsPageDrawer> {
     final querySnapshot =
         await collection.where('id', isEqualTo: addCareGiverId).get();
     //add caregivers
-    DocumentReference caregivers =
-        await FirebaseFirestore.instance.collection('users').doc(user.uid);
+    DocumentReference caregivers = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.user.uid);
 
     DocumentSnapshot selfSnapShot = await FirebaseFirestore.instance
         .collection('users')
-        .doc(user.uid)
+        .doc(widget.user.uid)
         .get();
     String? selfName;
     if (selfSnapShot.exists) {
@@ -43,29 +41,31 @@ class _SettingsPageDrawerState extends State<SettingsPageDrawer> {
       selfName = userSelfData["name"];
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('データが存在しません')),
+        const SnackBar(content: Text('データが存在しません')),
       );
     }
 
     for (var doc in querySnapshot.docs) {
       var data = doc.data();
-      if (user.uid != data["id"] && selfName != null) {
+      if (widget.user.uid != data["id"] && selfName != null) {
         caregivers
             .collection('caregivers')
             .doc(addCareGiverId)
             .set({"id": data["id"], "name": data["name"]});
-        //add carers
-        CollectionReference carers = await FirebaseFirestore.instance
+        //add careRecipients
+        CollectionReference careRecipients = await FirebaseFirestore.instance
             .collection('users')
             .doc(data["id"])
-            .collection("carers");
-        carers.doc(user.uid).set({"id": user.uid, "name": selfName});
+            .collection("carerecipients");
+        careRecipients
+            .doc(widget.user.uid)
+            .set({"id": widget.user.uid, "name": selfName});
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('介護者を登録しました')),
+          const SnackBar(content: Text('介護者を登録しました')),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('介護者のIDは自分のIDと同じでないことを確認してください')),
+          const SnackBar(content: Text('介護者のIDは自分のIDと同じでないことを確認してください')),
         );
       }
     }
@@ -85,12 +85,13 @@ class _SettingsPageDrawerState extends State<SettingsPageDrawer> {
       setState(() {
         updateFunction(newTime);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('登録が成功しました')),
+          const SnackBar(content: Text('登録が成功しました')),
         );
       });
       //Add data
-      DocumentReference userData =
-          await FirebaseFirestore.instance.collection('users').doc(user.uid);
+      DocumentReference userData = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.user.uid);
       userData.set({mealType: newTime}, SetOptions(merge: true)); //add Data
     }
   }
@@ -102,54 +103,54 @@ class _SettingsPageDrawerState extends State<SettingsPageDrawer> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Text(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.inversePrimary,
+            ),
+            child: const Text(
               '設定',
               style: TextStyle(
                 fontSize: 24,
               ),
             ),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.inversePrimary,
-            ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () =>
                 _showTimePicker("breakfastTime", _breakfastTime, (newTime) {
               _breakfastTime = newTime;
             }),
-            child: Text('朝食の時間を設定'),
+            child: const Text('朝食の時間を設定'),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () =>
                 _showTimePicker("lunchTime", _lunchTime, (newTime) {
-              _breakfastTime = newTime;
+              _lunchTime = newTime;
             }),
-            child: Text('昼食の時間を設定'),
+            child: const Text('昼食の時間を設定'),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () =>
                 _showTimePicker("dinnerTime", _dinnerTime, (newTime) {
-              _breakfastTime = newTime;
+              _dinnerTime = newTime;
             }),
-            child: Text('夜食の時間を設定'),
+            child: const Text('夕食の時間を設定'),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ListTile(
             title: TextField(
               controller: _caregiverController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: '介護者のID',
               ),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               onPressed: _addCareGiver,
-              child: Text('追加'),
+              child: const Text('追加'),
             ),
           ),
         ],

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:path/path.dart';
 
 class MedicinePageBody extends StatefulWidget {
   const MedicinePageBody({super.key, required this.title, required this.user});
@@ -9,42 +8,46 @@ class MedicinePageBody extends StatefulWidget {
   final User user;
 
   @override
-  State<MedicinePageBody> createState() => _MedicinePageState(user: user);
+  MedicinePageState createState() => MedicinePageState();
 }
 
-class _MedicinePageState extends State<MedicinePageBody> {
-  _MedicinePageState({required this.user});
+class MedicinePageState extends State<MedicinePageBody> {
   // 薬リストのデータ
   List<String> medicineList = [];
   List<String> imagesList = [];
   List<List<bool>> boolList = [];
+  List<List<int>> takenMedicineList = [];
   List<String> personList = [];
-  //for carers
-  List<String> carersMedicineList = [];
-  List<String> carersImagesList = [];
-  List<List<bool>> carersBoolList = [];
-  List<String> carersPersonList = [];
+  //for careRecipients
+  List<String> careRecipientsMedicineList = [];
+  List<String> careRecipientsImagesList = [];
+  List<List<bool>> careRecipientsBoolList = [];
+  List<String> careRecipientsPersonList = [];
+  List<List<int>> careRecipientsTakenMedicineList = [];
   String selfName = "";
-  User user;
 
   void _fetchData() async {
     FirebaseFirestore.instance
         .collection('users')
-        .doc(user.uid)
+        .doc(widget.user.uid)
         .collection('medicine')
         .snapshots()
         .listen((snapshot) async {
       List<String> tmpMedicineList = [];
       List<String> tmpImagesList = [];
       List<List<bool>> tmpBoolList = [];
+      List<List<int>> tmpTakenMedicineList = [];
 
       for (var doc in snapshot.docs) {
         var data = doc.data();
         tmpMedicineList.add(data["medicine"]);
-        tmpImagesList.add("assets/medimages/" + data["imgPath"]);
+        tmpImagesList.add('assets/medimages/${data["imgPath"]}');
         List<bool> bools =
             data["medicineTime"].whereType<bool>().toList(); //こうキャストしなければいけない
         tmpBoolList.add(bools);
+        List<int> takenMedicines =
+            data["takenMedicine"].whereType<int>().toList();
+        tmpTakenMedicineList.add(takenMedicines);
       }
       setState(() {
         medicineList.clear();
@@ -53,11 +56,12 @@ class _MedicinePageState extends State<MedicinePageBody> {
         medicineList.addAll(tmpMedicineList);
         imagesList.addAll(tmpImagesList);
         boolList.addAll(tmpBoolList);
+        takenMedicineList.addAll(tmpTakenMedicineList);
       });
 
       FirebaseFirestore.instance
           .collection('users')
-          .doc(user.uid)
+          .doc(widget.user.uid)
           .snapshots()
           .listen((userData) {
         if (userData.exists) {
@@ -77,27 +81,27 @@ class _MedicinePageState extends State<MedicinePageBody> {
     });
   }
 
-  void _fetchCarersData() async {
+  void _fetchCareRecipientsData() async {
     //To do: Careしている人のデータも取る
-    //Map<String, String> tmpCarersNames = {};
-    List<String> tmpCarersNames = [];
-    List<String> tmpCarersIds = [];
+    //Map<String, String> tmpCareRecipientsNames = {};
+    List<String> tmpCareRecipientsNames = [];
+    List<String> tmpCareRecipientsIds = [];
     FirebaseFirestore.instance
         .collection('users')
-        .doc(user.uid)
-        .collection('carers')
+        .doc(widget.user.uid)
+        .collection('carerecipients')
         .snapshots()
         .listen((snapshot) {
       for (var doc in snapshot.docs) {
         var data = doc.data();
-        tmpCarersNames.add(data["name"]);
-        tmpCarersIds.add(data["id"]);
+        tmpCareRecipientsNames.add(data["name"]);
+        tmpCareRecipientsIds.add(data["id"]);
       }
-      //iteration per carers
-      for (var index = 0; index < tmpCarersNames.length; ++index) {
+      //iteration per careRecipients
+      for (var index = 0; index < tmpCareRecipientsNames.length; ++index) {
         FirebaseFirestore.instance
             .collection('users')
-            .doc(tmpCarersIds[index])
+            .doc(tmpCareRecipientsIds[index])
             .collection('medicine')
             .snapshots()
             .listen((snapshot) {
@@ -105,21 +109,27 @@ class _MedicinePageState extends State<MedicinePageBody> {
           List<String> tmpImagesList = [];
           List<List<bool>> tmpBoolList = [];
           List<String> tmpPersonList = [];
+          List<List<int>> tmpTakenMedicineList = [];
+
           for (var doc in snapshot.docs) {
             var data = doc.data();
             tmpMedicineList.add(data["medicine"]);
-            tmpImagesList.add("assets/medimages/" + data["imgPath"]);
+            tmpImagesList.add("assets/medimages/${data["imgPath"]}");
             List<bool> bools = data["medicineTime"]
                 .whereType<bool>()
                 .toList(); //こうキャストしなければいけない
             tmpBoolList.add(bools);
-            tmpPersonList.add(tmpCarersNames[index]);
+            tmpPersonList.add(tmpCareRecipientsNames[index]);
+            List<int> takenMedicines =
+                data["takenMedicine"].whereType<int>().toList();
+            tmpTakenMedicineList.add(takenMedicines);
           }
           setState(() {
-            carersMedicineList.addAll(tmpMedicineList);
-            carersImagesList.addAll(tmpImagesList);
-            carersBoolList.addAll(tmpBoolList);
-            carersPersonList.addAll(tmpPersonList);
+            careRecipientsMedicineList.addAll(tmpMedicineList);
+            careRecipientsImagesList.addAll(tmpImagesList);
+            careRecipientsBoolList.addAll(tmpBoolList);
+            careRecipientsPersonList.addAll(tmpPersonList);
+            careRecipientsTakenMedicineList.addAll(tmpTakenMedicineList);
           });
         });
       }
@@ -135,20 +145,21 @@ class _MedicinePageState extends State<MedicinePageBody> {
         .delete();
   }
 
-  Widget _timeRow(List<bool> boolListContent, String userName) {
+  Widget _timeRow(
+      List<bool> boolListContent, String userName, List<int> takenMedicine) {
     List<Widget> widgets = [];
     widgets.add(Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         borderRadius: BorderRadius.horizontal(),
         color: Colors.white,
       ),
-      padding: EdgeInsets.all(4.0),
+      padding: const EdgeInsets.all(4.0),
       child: Text(
         userName,
-        style: TextStyle(fontSize: 14.0),
+        style: const TextStyle(fontSize: 14.0),
       ),
     ));
-    widgets.add(SizedBox(
+    widgets.add(const SizedBox(
       width: 8,
     ));
     if (boolListContent[0] == true) {
@@ -158,14 +169,14 @@ class _MedicinePageState extends State<MedicinePageBody> {
             borderRadius: BorderRadius.circular(10.0),
             color: Colors.pink[200],
           ),
-          padding: EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(4.0),
           child: Text(
-            'Morning',
-            style: TextStyle(fontSize: 14.0),
+            '朝 個数 ${takenMedicine[0]}',
+            style: const TextStyle(fontSize: 14.0),
           ),
         ),
       );
-      widgets.add(SizedBox(
+      widgets.add(const SizedBox(
         width: 8,
       ));
     }
@@ -176,14 +187,14 @@ class _MedicinePageState extends State<MedicinePageBody> {
             borderRadius: BorderRadius.circular(10.0),
             color: Colors.yellow[200],
           ),
-          padding: EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(4.0),
           child: Text(
-            'Lunch',
-            style: TextStyle(fontSize: 14.0),
+            '昼 個数 ${takenMedicine[1]}',
+            style: const TextStyle(fontSize: 14.0),
           ),
         ),
       );
-      widgets.add(SizedBox(
+      widgets.add(const SizedBox(
         width: 8,
       ));
     }
@@ -194,10 +205,10 @@ class _MedicinePageState extends State<MedicinePageBody> {
             borderRadius: BorderRadius.circular(10.0),
             color: Colors.blue[200],
           ),
-          padding: EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(4.0),
           child: Text(
-            'Dinner',
-            style: TextStyle(fontSize: 14.0),
+            '夜 個数 ${takenMedicine[2]}',
+            style: const TextStyle(fontSize: 14.0),
           ),
         ),
       );
@@ -214,7 +225,7 @@ class _MedicinePageState extends State<MedicinePageBody> {
 
   Widget medicineImageFromAsset(String imgPath) {
     if (imgPath.contains("noimage")) {
-      return SizedBox(
+      return const SizedBox(
         width: 50,
         height: 50,
         child: Text("No Medicine Image"),
@@ -228,14 +239,14 @@ class _MedicinePageState extends State<MedicinePageBody> {
   void initState() {
     super.initState();
     _fetchData();
-    _fetchCarersData();
+    _fetchCareRecipientsData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
         child: ListView.builder(
-      itemCount: medicineList.length + carersMedicineList.length,
+      itemCount: medicineList.length + careRecipientsMedicineList.length,
       itemBuilder: (context, index) {
         if (index < medicineList.length) {
           try {
@@ -243,11 +254,12 @@ class _MedicinePageState extends State<MedicinePageBody> {
               child: ListTile(
                 leading: medicineImageFromAsset(imagesList[index]),
                 title: Text(medicineList[index]),
-                subtitle: _timeRow(boolList[index], personList[index]),
+                subtitle: _timeRow(boolList[index], personList[index],
+                    takenMedicineList[index]),
                 trailing: IconButton(
-                    icon: Icon(Icons.close),
+                    icon: const Icon(Icons.close),
                     onPressed: () {
-                      _deleteMedicineData(user.uid, medicineList[index]);
+                      _deleteMedicineData(widget.user.uid, medicineList[index]);
                     }),
                 onTap: () {
                   // 薬の編集画面
@@ -255,34 +267,37 @@ class _MedicinePageState extends State<MedicinePageBody> {
               ),
             );
           } catch (e) {
-            return Text('...Loading');
+            return const Text('...読み込み中');
           }
         } else {
           return Card(
             child: ListTile(
               leading: medicineImageFromAsset(
-                  carersImagesList[index - medicineList.length]),
-              title: Text(carersMedicineList[index - medicineList.length]),
-              subtitle: _timeRow(carersBoolList[index - medicineList.length],
-                  carersPersonList[index - medicineList.length]),
+                  careRecipientsImagesList[index - medicineList.length]),
+              title:
+                  Text(careRecipientsMedicineList[index - medicineList.length]),
+              subtitle: _timeRow(
+                  careRecipientsBoolList[index - medicineList.length],
+                  careRecipientsPersonList[index - medicineList.length],
+                  careRecipientsTakenMedicineList[index - medicineList.length]),
               trailing: IconButton(
-                  icon: Icon(Icons.close),
+                  icon: const Icon(Icons.close),
                   onPressed: () {
                     showDialog(
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text('警告'),
-                            content: Text('他の人が飲んでいる薬をリストから消すことはできません'),
+                            title: const Text('警告'),
+                            content: const Text('他の人が飲んでいる薬をリストから消すことはできません'),
                             actions: [
                               TextButton(
-                                child: Text('いいえ'),
+                                child: const Text('いいえ'),
                                 onPressed: () {
                                   Navigator.of(context).pop(); // ダイアログを閉じる
                                 },
                               ),
                               TextButton(
-                                child: Text('はい'),
+                                child: const Text('はい'),
                                 onPressed: () {
                                   // はいがタップされた時の処理
                                   Navigator.of(context).pop(); // ダイアログを閉じる

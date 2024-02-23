@@ -5,20 +5,22 @@ import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPageBody extends StatefulWidget {
   const CalendarPageBody({super.key, required this.title, required this.user});
-  final title;
+  final String title;
   final User user;
   @override
-  State<CalendarPageBody> createState() => _CalendarPageState(user: user);
+  CalendarPageState createState() => CalendarPageState();
 }
 
-class _CalendarPageState extends State<CalendarPageBody> {
-  _CalendarPageState({required this.user});
+class CalendarPageState extends State<CalendarPageBody> {
   DateTime _focused = DateTime.now();
   DateTime _selected = DateTime.now();
-  User user;
 
   Map<DateTime, List<dynamic>> _events = {};
   Map<DateTime, List<DateTime>> _detailedTime = {};
+  Map<DateTime, String> _colorCodes = {};
+  final Map<DateTime, List<dynamic>> _careRecipientsEvents = {};
+  final Map<DateTime, List<DateTime>> _careRecipientsDetailedTime = {};
+  final Map<DateTime, String> _careRecipientsColorCodes = {};
   List<dynamic> _selectedEvents = [];
   List<DateTime> _selectedDetailedTime = [];
 
@@ -26,6 +28,7 @@ class _CalendarPageState extends State<CalendarPageBody> {
   void initState() {
     super.initState();
     _fetchEvents();
+    _fetchCareRecipientsEvents();
     _selectedEvents =
         _events[DateTime(_selected.year, _selected.month, _selected.day)] ?? [];
     _selectedDetailedTime = _detailedTime[
@@ -36,33 +39,132 @@ class _CalendarPageState extends State<CalendarPageBody> {
   void _fetchEvents() async {
     FirebaseFirestore.instance
         .collection('users')
-        .doc(user.uid)
+        .doc(widget.user.uid)
         .collection('schedule')
         .snapshots()
         .listen((snapshot) {
       final Map<DateTime, List<dynamic>> fetchedEvents = {};
       final Map<DateTime, List<DateTime>> fetchedTime = {};
+      final Map<DateTime, String> fetchedColorCodes = {};
       for (var doc in snapshot.docs) {
         var data = doc.data();
         final date = data["Date"]
             .toDate(); //For now, this app can only be used in Japan.
         final schedule = data["schedule"];
+        final String color = data["color"] ?? '0xFFCE93D8';
         final dateKey =
             DateTime(date.year, date.month, date.day); //To show the calendar
         if (fetchedEvents[dateKey] == null) {
           fetchedEvents[dateKey] = [schedule];
           fetchedTime[dateKey] = [date];
+          fetchedColorCodes[dateKey] = color;
         } else {
-          fetchedEvents[dateKey]?.add(schedule);
+          fetchedEvents[dateKey]?.add([schedule]);
           fetchedTime[dateKey]?.add(date);
+          fetchedColorCodes[dateKey] =
+              _addColorCodes(fetchedColorCodes[dateKey]!, color);
         }
       }
 
       setState(() {
         _events = fetchedEvents;
         _detailedTime = fetchedTime;
+        _colorCodes = fetchedColorCodes;
       });
     });
+  }
+
+  void _fetchCareRecipientsEvents() {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.user.uid)
+        .collection('carerecipients')
+        .snapshots()
+        .listen((snapshot) {
+      List<String> careRecipientsIds = [];
+      for (var doc in snapshot.docs) {
+        var data = doc.data();
+        careRecipientsIds.add(data["id"]);
+      }
+      final Map<DateTime, List<dynamic>> fetchedEvents = {};
+      final Map<DateTime, List<DateTime>> fetchedTime = {};
+      final Map<DateTime, String> fetchedColorCodes = {};
+      for (var index = 0; index < careRecipientsIds.length; ++index) {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(careRecipientsIds[index])
+            .collection('schedule')
+            .snapshots()
+            .listen((snapshot) {
+          for (var doc in snapshot.docs) {
+            var data = doc.data();
+            final date = data["Date"]
+                .toDate(); //For now, this app can only be used in Japan.
+            final schedule = data["schedule"];
+            final String color = data["color"] ?? '0xFFCE93D8';
+            final dateKey = DateTime(
+                date.year, date.month, date.day); //To show the calendar
+            if (fetchedEvents[dateKey] == null) {
+              fetchedEvents[dateKey] = [schedule];
+              fetchedTime[dateKey] = [date];
+              fetchedColorCodes[dateKey] = color;
+            } else {
+              fetchedEvents[dateKey]?.add([schedule]);
+              fetchedTime[dateKey]?.add(date);
+              fetchedColorCodes[dateKey] =
+                  _addColorCodes(fetchedColorCodes[dateKey]!, color);
+            }
+          }
+          setState(() {
+            _careRecipientsEvents.addAll(fetchedEvents);
+            _careRecipientsDetailedTime.addAll(fetchedTime);
+            _careRecipientsColorCodes.addAll(fetchedColorCodes);
+          });
+        });
+      }
+    });
+  }
+
+  List<dynamic> _mergeEvents(
+      DateTime selectedTime,
+      Map<DateTime, List<dynamic>> events,
+      Map<DateTime, List<dynamic>> careRecipientsEvents) {
+    List<dynamic> selectedEvents = [];
+    selectedEvents.addAll(events[DateTime(
+            selectedTime.year, selectedTime.month, selectedTime.day)] ??
+        []);
+    selectedEvents.addAll(careRecipientsEvents[DateTime(
+            selectedTime.year, selectedTime.month, selectedTime.day)] ??
+        []);
+    return selectedEvents;
+  }
+
+  List<DateTime> _mergeDetailedTime(
+      DateTime selectedTime,
+      Map<DateTime, List<DateTime>> detailedTime,
+      Map<DateTime, List<DateTime>> careRecipientsDetailedTime) {
+    List<DateTime> selectedDetailedTime = [];
+    selectedDetailedTime.addAll(detailedTime[DateTime(
+            selectedTime.year, selectedTime.month, selectedTime.day)] ??
+        []);
+    selectedDetailedTime.addAll(careRecipientsDetailedTime[DateTime(
+            selectedTime.year, selectedTime.month, selectedTime.day)] ??
+        []);
+    return selectedDetailedTime;
+  }
+
+  String _addColorCodes(String colorCodes, String addColor) {
+    List<String> colorCandidates = [
+      '0xFFF44336',
+      '0xFFFF8A65',
+      '0xFFCE93D8',
+    ]; //重要順
+    for (var i = 0; i < colorCandidates.length; ++i) {
+      if (colorCodes == colorCandidates[i] || addColor == colorCandidates[i]) {
+        return colorCandidates[i];
+      }
+    }
+    return '0xFFCE93D8';
   }
 
   @override
@@ -80,12 +182,11 @@ class _CalendarPageState extends State<CalendarPageBody> {
                 setState(() {
                   _selected = selected;
                   _focused = focused;
-                  _selectedEvents = _events[DateTime(
-                          _selected.year, _selected.month, _selected.day)] ??
-                      [];
-                  _selectedDetailedTime = _detailedTime[DateTime(
-                          _selected.year, _selected.month, _selected.day)] ??
-                      [];
+                  // to do _selectedEventsの更新は_careRecipientsEventsと_eventsをmergeするのが良さそう。
+                  _selectedEvents =
+                      _mergeEvents(_selected, _events, _careRecipientsEvents);
+                  _selectedDetailedTime = _mergeDetailedTime(
+                      _selected, _detailedTime, _careRecipientsDetailedTime);
                 });
               }
             },
@@ -98,12 +199,15 @@ class _CalendarPageState extends State<CalendarPageBody> {
             calendarBuilders:
                 CalendarBuilders(defaultBuilder: (context, date, _) {
               var datelocal = DateTime(date.year, date.month, date.day);
-              if (_events.containsKey(datelocal)) {
+              if (_events.containsKey(datelocal) ||
+                  _careRecipientsEvents.containsKey(datelocal)) {
                 return Center(
                   child: Container(
-                    margin: EdgeInsets.all(4.0),
+                    margin: const EdgeInsets.all(4.0),
                     decoration: BoxDecoration(
-                      color: Colors.blue[300],
+                      color: Color(int.parse((_colorCodes[datelocal] ??
+                          _careRecipientsColorCodes[
+                              datelocal])!)), //to do: consider color preference
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     width: 100,
@@ -111,7 +215,7 @@ class _CalendarPageState extends State<CalendarPageBody> {
                     child: Center(
                       child: Text(
                         '${date.day}',
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
@@ -121,7 +225,7 @@ class _CalendarPageState extends State<CalendarPageBody> {
               }
             }),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           //To Do: ここにカレンダーをタップした時の予定を書く
           Expanded(
             child: ListView.builder(
@@ -129,10 +233,8 @@ class _CalendarPageState extends State<CalendarPageBody> {
               itemBuilder: (context, index) {
                 if (_selectedEvents[index] != "") {
                   var hourMinute =
-                      _selectedDetailedTime[index].hour.toString() +
-                          ":" +
-                          _selectedDetailedTime[index].minute.toString();
-                  var content = hourMinute + " " + _selectedEvents[index];
+                      '${_selectedDetailedTime[index].hour.toString()}:${_selectedDetailedTime[index].minute.toString()}';
+                  var content = '$hourMinute ${_selectedEvents[index]}';
                   return Card(
                       child: ListTile(
                     title: Text(content),

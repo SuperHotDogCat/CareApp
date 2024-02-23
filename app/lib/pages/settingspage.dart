@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math';
-import 'package:intl/intl.dart';
 
 class SettingsPageBody extends StatefulWidget {
   const SettingsPageBody(
@@ -15,30 +14,26 @@ class SettingsPageBody extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldState;
 
   @override
-  State<SettingsPageBody> createState() =>
-      _SettingsPageState(user: user, scaffoldState: scaffoldState);
+  SettingsPageState createState() => SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPageBody> {
-  _SettingsPageState({required this.user, required this.scaffoldState});
-  User user;
-  GlobalKey<ScaffoldState> scaffoldState;
-  final remindDropDownItems = [
+class SettingsPageState extends State<SettingsPageBody> {
+  final remindDropDownItems = const [
     DropdownMenuItem(
-      child: Text("15 min"),
       value: 15,
+      child: Text("15 分"),
     ),
     DropdownMenuItem(
-      child: Text("30 min"),
       value: 30,
+      child: Text("30 分"),
     ),
     DropdownMenuItem(
-      child: Text("45 min"),
       value: 45,
+      child: Text("45 分"),
     ),
     DropdownMenuItem(
-      child: Text("60 min"),
       value: 60,
+      child: Text("60 分"),
     ),
   ];
 
@@ -52,44 +47,44 @@ class _SettingsPageState extends State<SettingsPageBody> {
   }
 
   void _openDrawer() {
-    scaffoldState.currentState?.openDrawer();
+    widget.scaffoldState.currentState?.openDrawer();
   }
 
   List<String> careGivers = [];
-  List<String> carers = [];
+  List<String> careRecipients = [];
 
-  Map<String, DateTime> _MealTime = {
+  Map<String, DateTime> _mealTime = {
     "breakfast": DateTime.now(),
     "lunch": DateTime.now(),
     "dinner": DateTime.now()
   };
 
   void _fetchMealTime() async {
-    await FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection('users')
-        .doc(user.uid)
+        .doc(widget.user.uid)
         .snapshots()
         .listen((snapshot) {
-      Map<String, DateTime> _Time = {
+      Map<String, DateTime> time = {
         "breakfast": DateTime.now(),
         "lunch": DateTime.now(),
         "dinner": DateTime.now()
       };
       var data = snapshot.data();
       // null vulnerable
-      _Time["breakfast"] = data?["breakfastTime"].toDate();
-      _Time["lunch"] = data?["lunchTime"].toDate();
-      _Time["dinner"] = data?["dinnerTime"].toDate();
+      time["breakfast"] = data?["breakfastTime"].toDate();
+      time["lunch"] = data?["lunchTime"].toDate();
+      time["dinner"] = data?["dinnerTime"].toDate();
       setState(() {
-        _MealTime = _Time;
+        _mealTime = time;
       });
     });
   }
 
   void _fetchCaregivers() async {
-    await FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection('users')
-        .doc(user.uid)
+        .doc(widget.user.uid)
         .collection('caregivers')
         .snapshots()
         .listen((snapshot) {
@@ -103,19 +98,19 @@ class _SettingsPageState extends State<SettingsPageBody> {
     });
   }
 
-  void _fetchCarers() async {
-    await FirebaseFirestore.instance
+  void _fetchCareRecipients() async {
+    FirebaseFirestore.instance
         .collection('users')
-        .doc(user.uid)
-        .collection('carers')
+        .doc(widget.user.uid)
+        .collection('carerecipients')
         .snapshots()
         .listen((snapshot) {
-      List<String> tmpCarers = [];
+      List<String> tmpCareRecipients = [];
       for (var doc in snapshot.docs) {
-        tmpCarers.add(doc["name"]);
+        tmpCareRecipients.add(doc["name"]);
       }
       setState(() {
-        carers = tmpCarers;
+        careRecipients = tmpCareRecipients;
       });
     });
   }
@@ -124,26 +119,27 @@ class _SettingsPageState extends State<SettingsPageBody> {
     String hour = '${dateTime?.hour}';
     String minute = '${dateTime?.minute}';
     if (hour.length == 1) {
-      hour = '0' + hour;
+      hour = '0$hour';
     }
     if (minute.length == 1) {
-      minute = minute + '0';
+      minute = '${minute}0';
     }
-    return '${hour}:${minute}';
+    return '$hour:$minute';
   }
 
   @override
   void initState() {
+    super.initState();
     _fetchMealTime();
     _fetchCaregivers();
-    _fetchCarers();
+    _fetchCareRecipients();
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.all(32.0),
+        padding: const EdgeInsets.all(32.0),
         child: Center(
           child: Column(
             children: <Widget>[
@@ -151,7 +147,7 @@ class _SettingsPageState extends State<SettingsPageBody> {
                 '通知の頻度',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               DropdownButton(
@@ -159,43 +155,44 @@ class _SettingsPageState extends State<SettingsPageBody> {
                 onChanged: (value) => remindDropDownChanged(value),
                 value: reminderInterval,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               Text(
                 '毎食の時間',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               Text(
-                "朝食 " + _showTime(_MealTime["breakfast"]),
+                '朝食 ${_showTime(_mealTime["breakfast"])}',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               Text(
-                "昼食 " + _showTime(_MealTime["lunch"]),
+                '昼食 ${_showTime(_mealTime["lunch"])}',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               Text(
-                "夜食 " + _showTime(_MealTime["dinner"]),
+                '夜食 ${_showTime(_mealTime["dinner"])}',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               ElevatedButton(
                 onPressed: _openDrawer,
-                child: Text('食事時間を設定'),
+                child: const Text('食事時間を設定'),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
-              Text(
-                '自分の介護をしている人',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              SizedBox(
+              if (careGivers.isNotEmpty)
+                Text(
+                  '自分の介護をしている人',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+              const SizedBox(
                 height: 16,
               ),
               SizedBox(
@@ -210,31 +207,32 @@ class _SettingsPageState extends State<SettingsPageBody> {
                       );
                     }),
               ),
-              Text(
-                '自分が介護をしている人',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              SizedBox(
+              if (careRecipients.isNotEmpty)
+                Text(
+                  '自分が介護をしている人',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+              const SizedBox(
                 height: 16,
               ),
               SizedBox(
-                height: min(carers.length * 50, 200),
+                height: min(careRecipients.length * 50, 200),
                 child: ListView.builder(
-                    itemCount: carers.length,
+                    itemCount: careRecipients.length,
                     itemBuilder: (context, index) {
                       return Card(
                         child: ListTile(
-                          title: Text(carers[index]),
+                          title: Text(careRecipients[index]),
                         ),
                       );
                     }),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               ElevatedButton(
                 onPressed: _openDrawer,
-                child: Text('共同介護者を追加'),
+                child: const Text('介護者を追加'),
               ),
             ],
           ),
