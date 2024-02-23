@@ -1,2 +1,2 @@
 # CareApp
-solution challenge 2024 product
+[Solution Challenge 2024 Product](https://developers.google.com/community/gdsc-solution-challenge)

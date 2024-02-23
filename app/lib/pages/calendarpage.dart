@@ -167,6 +167,18 @@ class CalendarPageState extends State<CalendarPageBody> {
     return '0xFFCE93D8';
   }
 
+  String _showTime(DateTime? dateTime) {
+    String hour = '${dateTime?.hour}';
+    String minute = '${dateTime?.minute}';
+    if (hour.length == 1) {
+      hour = '0$hour';
+    }
+    if (minute.length == 1) {
+      minute = '${minute}0';
+    }
+    return '$hour:$minute';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -232,8 +244,7 @@ class CalendarPageState extends State<CalendarPageBody> {
               itemCount: _selectedEvents.length,
               itemBuilder: (context, index) {
                 if (_selectedEvents[index] != "") {
-                  var hourMinute =
-                      '${_selectedDetailedTime[index].hour.toString()}:${_selectedDetailedTime[index].minute.toString()}';
+                  var hourMinute = _showTime(_selectedDetailedTime[index]);
                   var content = '$hourMinute ${_selectedEvents[index]}';
                   return Card(
                       child: ListTile(
