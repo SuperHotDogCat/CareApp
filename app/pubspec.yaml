@@ -32,7 +32,7 @@ dependencies:
     sdk: flutter
   firebase_core: ^2.25.4
   firebase_auth: ^4.17.4
-  firebase_messaging: ^14.1.0
+  firebase_messaging: ^14.7.16
   cloud_firestore: ^4.0.5
   table_calendar: ^3.1.0
   # The following adds the Cupertino Icons font to your application.
@@ -41,6 +41,7 @@ dependencies:
   intl: ^0.19.0 #DateTime
   csv: ^5.0.0
   path: ^1.8.0
+  flutter_local_notifications: ^16.3.2
 
 dev_dependencies:
   flutter_test:
@@ -94,6 +95,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-  assets:
-    - assets/
-    - assets/medimages/
+  #assets:
+  #  - assets/
+  #  - assets/medimages/
