@@ -13,13 +13,7 @@ final configrations = Configurations();
 
 Future<void> init() async {
   //これ絶対に必要, initもしろ
-  await Firebase.initializeApp(
-      name: 'flutterapp',
-      options: FirebaseOptions(
-          apiKey: configrations.apiKey,
-          appId: configrations.appId,
-          messagingSenderId: configrations.messagingSenderId,
-          projectId: configrations.projectId));
+  await Firebase.initializeApp();
 
   // FCM用の設定 通知権限のリクエスト
   final messagingInstance = FirebaseMessaging.instance;
