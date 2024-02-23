@@ -129,12 +129,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // これを追
-      title: 'Flutter Demo',
+      title: 'CareLink',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: LogInPage(),
+      home: const LogInPage(),
     );
   }
 }
