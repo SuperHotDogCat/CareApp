@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "356789513515",
+    "project_id": "flutterapp-60eb7",
+    "storage_bucket": "flutterapp-60eb7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:356789513515:android:5da03bab7458d3453c696e",
+        "android_client_info": {
+          "package_name": "dev.community.gdsc.utokyo.careapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfd2GNgpiVAO4hIIUjL0h2dWLydzHZf-E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
