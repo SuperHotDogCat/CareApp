@@ -65,12 +65,28 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
-
 GoogleService-Info.plist
 
 medimages/
 ./medimages/
+
+# Android Studio will place build artifacts here
+app/android/app/debug
+app/android/app/profile
+app/android/app/release
+app/android/local.properties
+
+# iOS
+app/ios/.symlinks/plugins/*
+app/ios/Flutter/Generated.xcconfig
+app/ios/Flutter/flutter_export_environment.sh
+
+#macos
+app/macos/Flutter/ephemeral/Flutter-Generated.xcconfig
+app/macos/Flutter/ephemeral/flutter_export_environment.sh
+
+
+#windows
+app/windows/flutter/ephemeral/.plugins_symlinks/*
+
+GoogleService-Info.plist
