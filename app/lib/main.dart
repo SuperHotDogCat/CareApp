@@ -1,19 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'firebase_options.dart';
 import 'pages.dart';
-import 'config.dart';
-//ios build, firebase iosを追加して手順に従う->https://qiita.com/kasa_le/items/fed9f25b92091bd162ce & https://zenn.dev/popy1017/articles/b9f3e46b5efeb79af1f7
-
-final configurations = Configurations();
 
 Future<void> init() async {
-  //これ絶対に必要, initもしろ
+  //init firebase
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,);
 
