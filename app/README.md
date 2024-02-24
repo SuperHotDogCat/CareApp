@@ -1,6 +1,6 @@
 # app
 
-Flutter project.
+Flutter project. Solution Challenge 2024.
 
 ## Demo
 
@@ -45,4 +45,20 @@ flutter run
 ```
 
 ### Error Handling
-If 
+If errors occur, please follow the steps below.
+
+#### 1. flutter clean
+Let's initialize the `build` and `.dart_tool` directories.
+```
+flutter clean
+```
+
+#### 2. firebase configure
+If you encounter any bugs related to Firebase, please execute the following code to initialize Firebase configurations:
+```
+dart pub global activate flutterfire_cli
+```
+```
+flutterfire configure --project=flutterapp-60eb7
+```
+`flutterapp-60eb7` is the name of our Firebase project.
