@@ -62,3 +62,9 @@ dart pub global activate flutterfire_cli
 flutterfire configure --project=flutterapp-60eb7
 ```
 `flutterapp-60eb7` is the name of our Firebase project.
+
+## Appendix
+### UML
+The UML diagram for the page class is stored in "UML" directory.
+
+<img src="UML/classUML.png" height=90% width=90%>
