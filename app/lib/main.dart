@@ -10,7 +10,8 @@ import 'pages.dart';
 Future<void> init() async {
   //init firebase
   await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,);
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // FCM用の設定 通知権限のリクエスト
   final messagingInstance = FirebaseMessaging.instance;
