@@ -37,8 +37,6 @@ You can set the frequency of notifications. Meal times are displayed. The names 
 We are introducing the app's features on YouTube.
 The YouTube link is as follows: <a href="https://www.youtube.com/embed/mDTrj5genJs?si=S20Ol2_-ziAYQXet">https://www.youtube.com/embed/mDTrj5genJs?si=S20Ol2_-ziAYQXet</a>
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/mDTrj5genJs?si=S20Ol2_-ziAYQXet" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
 # Future work
 ・We are also considering an application for Android TV.
 ・We will collaborate with local healthcare institutions.
