@@ -44,7 +44,5 @@ Run the following script, then our app started with your virtual device.
 flutter run
 ```
 
-### Getting Started With iOS
-<p>
-iOS set up is really very complicated. If you failed in setting up our app, please post about it on GitHub issue.
-</p>
+### Error Handling
+If 
